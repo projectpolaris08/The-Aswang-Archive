@@ -5,6 +5,7 @@ import TikbalangImage from "../assets/Tikbalang.jpeg";
 import KapreImage from "../assets/Kapre.jpeg";
 import TiyanakImage from "../assets/Tiyanak.jpeg";
 import SigbinImage from "../assets/Sigbin.jpeg";
+import GabunanImage from "../assets/Gabunan.jpeg";
 
 export const creatures: Creature[] = [
   {
@@ -86,5 +87,21 @@ export const creatures: Creature[] = [
       "Backward walking",
     ],
     imageUrl: SigbinImage,
+  },
+  {
+    id: "7",
+    name: "Gabunan",
+    type: "Aswang Chieftain",
+    origin: "Visayas",
+    description:
+      "The Gabunan is a high-ranking aswang variant, often serving as a chieftain or regional overlord in aswang clans. Unlike common aswang, Gabunans exhibit strategic intelligence, organizing feeding territories (pugad) and enforcing rules among lesser monsters.",
+    abilities: [
+      "Supreme Shapeshifting",
+      "Regional Overlord",
+      "Lunar Augmentation",
+      "Flesh Divination",
+      "Anti-Holy Tactics",
+    ],
+    imageUrl: GabunanImage,
   },
 ];

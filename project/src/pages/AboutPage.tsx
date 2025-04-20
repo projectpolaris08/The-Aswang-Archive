@@ -15,12 +15,15 @@ const AboutPage: React.FC = () => {
                 Our Mission
               </h2>
               <p className="text-gray-300 leading-relaxed mb-6">
-                The Aswang Archive is dedicated to documenting and preserving
-                the rich mythology and folklore of the Philippines. Our goal is
-                to provide a comprehensive resource for those interested in
-                learning about the supernatural creatures, legends, and
-                traditions that form an important part of Filipino cultural
-                heritage.
+                The Aswang Archive is committed to exploring and safeguarding
+                the vibrant myths and folk tales of the Philippines. Our mission
+                is to create an in-depth collection for enthusiasts, scholars,
+                and curious minds eager to discover the supernatural beings,
+                age-old stories, and cultural practices that shape the
+                Philippines' unique heritage. By combining thorough research,
+                engaging narratives, and insights from local communities, we
+                strive to ensure these timeless legends endure for generations
+                to come while introducing them to audiences worldwide.
               </p>
               <p className="text-gray-300 leading-relaxed">
                 Through detailed research, storytelling, and community
