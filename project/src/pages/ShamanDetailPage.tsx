@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { shamansHealers } from "../data/shamanHealers";
+import ShamanCard from "../components/shamanHealers/ShamanCard";
 import { Shaman } from "../types";
 import { ArrowLeft } from "lucide-react";
 
@@ -101,33 +102,7 @@ const ShamanDetailPage: React.FC = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {relatedShamans.map((relatedShaman) => (
-                <div
-                  key={relatedShaman.id}
-                  className="bg-gray-800 rounded-lg overflow-hidden shadow-lg"
-                >
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-white mb-2">
-                      {relatedShaman.name}
-                    </h3>
-                    <div className="flex gap-2 mb-3">
-                      <span className="text-xs px-2 py-1 bg-red-900 text-red-100 rounded-full">
-                        {relatedShaman.type}
-                      </span>
-                      <span className="text-xs px-2 py-1 bg-blue-900 text-blue-100 rounded-full">
-                        {relatedShaman.origin}
-                      </span>
-                    </div>
-                    <p className="text-gray-300 line-clamp-3 mb-4">
-                      {relatedShaman.description}
-                    </p>
-                    <Link
-                      to={`/shamans-healers/${relatedShaman.id}`}
-                      className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors"
-                    >
-                      Learn more →
-                    </Link>
-                  </div>
-                </div>
+                <ShamanCard key={relatedShaman.id} shaman={relatedShaman} />
               ))}
             </div>
           </div>

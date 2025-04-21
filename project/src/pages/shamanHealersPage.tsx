@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Shaman } from "../types";
 import { shamansHealers } from "../data/shamanHealers";
 import { Search } from "lucide-react";
+import ShamanCard from "../components/shamanHealers/ShamanCard";
 
 const ShamansHealersPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,7 +43,7 @@ const ShamansHealersPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Search and filters - Same structure as CreaturesPage */}
+        {/* Search and filters */}
         <div className="max-w-5xl mx-auto mb-10">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-grow">
@@ -86,27 +87,9 @@ const ShamansHealersPage: React.FC = () => {
 
         {/* Results */}
         {filteredShamans.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {filteredShamans.map((shaman: Shaman) => (
-              <div
-                key={shaman.id}
-                className="bg-gray-800 rounded-lg overflow-hidden shadow-lg"
-              >
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">
-                    {shaman.name}
-                  </h3>
-                  <div className="flex gap-2 mb-3">
-                    <span className="text-xs px-2 py-1 bg-red-900 text-red-100 rounded-full">
-                      {shaman.type}
-                    </span>
-                    <span className="text-xs px-2 py-1 bg-blue-900 text-blue-100 rounded-full">
-                      {shaman.origin}
-                    </span>
-                  </div>
-                  <p className="text-gray-300">{shaman.description}</p>
-                </div>
-              </div>
+              <ShamanCard key={shaman.id} shaman={shaman} />
             ))}
           </div>
         ) : (

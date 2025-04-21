@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { stories } from "../data/stories";
-import type { Story } from "../../types";
+import { Story } from "../types/index";
 import StoryDetail from "../components/stories/StoryDetail";
 import StoryCard from "../components/stories/StoryCard";
 import { ArrowLeft } from "lucide-react";
