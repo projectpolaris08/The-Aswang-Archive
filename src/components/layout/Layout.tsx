@@ -7,25 +7,23 @@ const Layout: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {
-    // Apply dark mode to body element
-    if (isDarkMode) {
-      document.body.classList.add('bg-gray-900', 'text-gray-100');
-    } else {
-      document.body.classList.remove('bg-gray-900', 'text-gray-100');
-      document.body.classList.add('bg-gray-50', 'text-gray-900');
-    }
-
+    // Always use dark mode for Bolt-style UI
+    document.body.classList.add('bg-black');
+    document.body.classList.add('text-gray-100');
+    
     return () => {
-      document.body.classList.remove('bg-gray-900', 'text-gray-100', 'bg-gray-50', 'text-gray-900');
+      document.body.classList.remove('bg-black', 'text-gray-100');
     };
-  }, [isDarkMode]);
+  }, []);
 
+  // We're keeping the toggle functionality in case you want it,
+  // but for Bolt style, we'll default to dark theme
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${isDarkMode ? 'dark' : 'light'}`}>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-black via-gray-900 to-black">
       <Navbar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       <main className="flex-grow pt-20">
         <Outlet />

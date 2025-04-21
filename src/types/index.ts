@@ -13,12 +13,10 @@ export interface Shaman {
   name: string;
   type: string;
   origin: string;
-  imageUrl: string;
-  tribe?: string;
-  rank?: string;
   description: string;
+  imageUrl: string;
   abilities: string[];
-  spiritualConnections?: string[];
+  // Add any other properties your shaman objects have
 }
 
 export interface Story {
