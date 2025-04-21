@@ -7,6 +7,7 @@ import TiyanakImage from "../assets/Tiyanak.jpeg";
 import SigbinImage from "../assets/Sigbin.jpeg";
 import GabunanImage from "../assets/Gabunan.jpeg";
 
+
 export const creatures: Creature[] = [
   {
     id: "1",
@@ -104,4 +105,5 @@ export const creatures: Creature[] = [
     ],
     imageUrl: GabunanImage,
   },
+  
 ];

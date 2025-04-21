@@ -4,6 +4,7 @@ import { Shaman } from "../types";
 import babaylanImage from '../assets/Babaylan.jpeg';
 import mambabarangImage from '../assets/Mambabarang.jpeg';
 import mangkukulamImage from '../assets/Mangkukulam.jpeg';
+import albularyoImage from '../assets/Albularyo.jpeg';
 
 export const shamansHealers: Shaman[] = [
   {
@@ -41,13 +42,28 @@ export const shamansHealers: Shaman[] = [
     type: "Priestess",
     origin: "Tagalog",
     imageUrl: mangkukulamImage, // Use imported image reference
-    description: "The Catalonan were the Tagalog counterparts to the Visayan Babaylans, serving as priestesses who conducted important community rituals. They preserved oral traditions and mediated between deities (anitos) and people.",
+    description: "A Mangkukulam is a practitioner of kulam, a form of folk witchcraft or sorcery in the Philippines, often associated with casting spells or curses to harm others. Commonly found in various regions of the Philippines, especially in rural provinces where belief in supernatural forces remains strong. Often portrayed as an ordinary person, usually elderly. Sometimes depicted as mysterious, reclusive, or living on the outskirts of the village. Not always visually distinguishable from others.",
     abilities: [
-      "Ancestral communication",
-      "Ritual leadership",
-      "Cultural preservation",
-      "Divine intercession"
+      "Kulam (Cursing)",
+      "Remote Attacks",
+      "Spirit Manipulation",
+      "Healing Knowledge"
     ]
-  }
+  },
+  {
+    id: "albularyo",
+    name: "Albularyo",
+    type: "Healer",
+    origin: "Bicol",
+    imageUrl: albularyoImage, // Use imported image reference
+    description: "An albularyo is a traditional Filipino folk healer or medicine man/woman who uses herbal remedies, prayers (orasyon), rituals, and supernatural insight to diagnose and cure ailments—both physical and spiritual.",
+    abilities: [
+      "Diagnosis of Illness-Pagtatawas",
+      "Herbal Medicine",
+      "Spirit Healing",
+      "Protection and Counter-Sorcery",
+      "Communication with Spirits"
+    ]
+  },
   // Add more shamans as needed
 ];

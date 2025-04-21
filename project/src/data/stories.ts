@@ -8,6 +8,8 @@ import SigbinImage from "../assets/Sigbin.jpeg";
 import GoldenshellImage from "../assets/Goldenshell.jpeg";
 import BaletedriveImage from "../assets/Baletedrive.jpeg";
 import GabunanImage from "../assets/Gabunan.jpeg";
+import RubenImage from "../assets/Ruben.jpeg";
+
 
 export const stories: Story[] = [
   {
@@ -49,9 +51,31 @@ export const stories: Story[] = [
     imageUrl: GabunanImage,
     featured: true,
   },
-  
   {
     id: "2",
+    title: "The Aswang War of Pasig (1961)",
+    excerpt:
+      "Ruben stood by the riverbank, torch in hand, as the moonlit wind carried the distant hiss of something no longer human.",
+    content: `This story is based on the real-life experiences of Ruben in 1961 Pasig, Manila. At that time, Ruben’s family lived by the Pasig River, where fishing was their livelihood. Back then, Pasig was still pristine—roads were unpaved, and carabaos were more common than vehicles. Life was simple, almost provincial, but beneath the calm surface lurked unseen dangers.
+
+    Ruben had always been attuned to hidden knowledge, sensing a looming conflict others ignored. One afternoon, while walking through his village, he encountered an old antingero (folk healer). He invited the elder to his home, where they spoke over boiled sweet potatoes. Ruben confessed his growing unease—aswang (shape-shifting monsters) now roamed their once-peaceful area daily. The old man listened gravely, then revealed a chilling truth: a secret war was brewing.
+
+    For months, a faction led by Carlo, a powerful aswang warlord, had been infiltrating Pasig. Victims vanished quietly, their deaths masked as accidents. A resistance of albularyos (herbal healers) and babaylan (shamans) had formed to counter them, but Carlo’s forces were overwhelming. The elder explained that Carlo’s lineage—the Gup, ancient betrayers of datus—were aswang bred to hunt healers. Their strength was unnatural, their hatred centuries old.
+
+    Compelled by destiny, Ruben joined the resistance. That night, they gathered at a church, where a babaylan initiated him into their circle. Her necklace—a hardened monitor lizard claw embedded with a gem—hummed with power. As the moon waxed full, the group patrolled the village. Soon, they spotted two naked figures with covered heads, hissing like beasts. The creatures lunged, but the healers fought back with torches and blessed words. The aswang retreated, but not before Ruben sensed their malice thickening the air.
+
+    Days later, the babaylan led them to Carlo’s lair across the river. Only Ruben hesitated—his boat could barely fit them all. By nightfall, the others hadn’t returned. Forced to swim the treacherous currents, Ruben and his allies arrived to a nightmare: the babaylan was bound to a tree, dying. Her companions lay headless. Surrounding them were Carlo’s hybrids—aswang with obsidian skin and fanged grins.
+
+    Carlo offered a twisted bargain: kneel, renounce their magic, and live. Defiance meant death. One by one, the healers refused, chanting spells until their last breaths. The babaylan, impaled through the chest, took two aswang with her. But Ruben, trembling, knelt. Carlo laughed, cursing him: "Your gifts are gone. You’ll live as a fool, forever haunted."
+
+    Ruben barely escaped, swimming back under the cover of darkness. In the years that followed, he never regained his abilities. The resistance was erased, and Carlo’s kind faded into myth. Yet Ruben, though broken, found solace in his family. He’d whisper to those who’d listen: "Evil exists. And sometimes, it wins."`,
+    region: "Pasig",
+    imageUrl: RubenImage,
+    featured: false,
+  },
+  
+  {
+    id: "3",
     title: "The Curse of Balete Drive",
     excerpt:
       "The tale of the mysterious lady in white who haunts Balete Drive in Quezon City.",
@@ -67,7 +91,7 @@ export const stories: Story[] = [
     featured: false,
   },
   {
-    id: "3",
+    id: "4",
     title: "The Vengeful Aswang of Capiz",
     excerpt:
       "How a scorned woman became one of the most feared creatures in Filipino folklore.",
@@ -83,7 +107,7 @@ export const stories: Story[] = [
     featured: false,
   },
   {
-    id: "4",
+    id: "5",
     title: "The Bridge of San Juanico",
     excerpt:
       "The tragic love story behind the longest bridge in the Philippines.",
@@ -101,7 +125,7 @@ export const stories: Story[] = [
     featured: false,
   },
   {
-    id: "5",
+    id: "6",
     title: "The Bakunawa and the Seven Moons",
     excerpt:
       "How a dragon swallowed six of the seven moons in the ancient Filipino sky.",
@@ -119,7 +143,7 @@ export const stories: Story[] = [
     featured: false,
   },
   {
-    id: "6",
+    id: "7",
     title: "The Golden Shell of Panay",
     excerpt:
       "A tale of how the island of Panay was created from a magical golden shell.",
@@ -137,7 +161,7 @@ export const stories: Story[] = [
     featured: false,
   },
   {
-    id: "7",
+    id: "8",
     title: "The First Manananggal",
     excerpt:
       "Long before the Spanish came, the Visayas knew of a healer who became a monster—this is how the Manananggal was born.",
@@ -155,7 +179,7 @@ export const stories: Story[] = [
     featured: true,
   },
   {
-    id: "8",
+    id: "9",
     title: "The Tikbalang King of Mount Makiling",
     excerpt:
       "The story of the mysterious horse-like creature that rules Mount Makiling.",
@@ -171,7 +195,7 @@ export const stories: Story[] = [
     featured: false,
   },
   {
-    id: "9",
+    id: "10",
     title: "The Sigbin of Mindanao",
     excerpt:
       "The tale of a mysterious creature that walks backwards and brings fortune or misfortune.",
@@ -184,6 +208,28 @@ export const stories: Story[] = [
     Some stories tell of the Sigbin's ability to curse those who disrespect it, causing illness and misfortune that can last for generations. The only way to lift such a curse is to gain the forgiveness of the Sigbin's owner family.`,
     region: "Mindanao",
     imageUrl: SigbinImage,
+    featured: false,
+  },
+  {
+    id: "2",
+    title: "The Aswang War of Pasig (1961)",
+    excerpt:
+      "Ruben stood by the riverbank, torch in hand, as the moonlit wind carried the distant hiss of something no longer human.",
+    content: `This story is based on the real-life experiences of Ruben in 1961 Pasig, Manila. At that time, Ruben’s family lived by the Pasig River, where fishing was their livelihood. Back then, Pasig was still pristine—roads were unpaved, and carabaos were more common than vehicles. Life was simple, almost provincial, but beneath the calm surface lurked unseen dangers.
+
+    Ruben had always been attuned to hidden knowledge, sensing a looming conflict others ignored. One afternoon, while walking through his village, he encountered an old antingero (folk healer). He invited the elder to his home, where they spoke over boiled sweet potatoes. Ruben confessed his growing unease—aswang (shape-shifting monsters) now roamed their once-peaceful area daily. The old man listened gravely, then revealed a chilling truth: a secret war was brewing.
+
+    For months, a faction led by Carlo, a powerful aswang warlord, had been infiltrating Pasig. Victims vanished quietly, their deaths masked as accidents. A resistance of albularyos (herbal healers) and babaylan (shamans) had formed to counter them, but Carlo’s forces were overwhelming. The elder explained that Carlo’s lineage—the Gup, ancient betrayers of datus—were aswang bred to hunt healers. Their strength was unnatural, their hatred centuries old.
+
+    Compelled by destiny, Ruben joined the resistance. That night, they gathered at a church, where a babaylan initiated him into their circle. Her necklace—a hardened monitor lizard claw embedded with a gem—hummed with power. As the moon waxed full, the group patrolled the village. Soon, they spotted two naked figures with covered heads, hissing like beasts. The creatures lunged, but the healers fought back with torches and blessed words. The aswang retreated, but not before Ruben sensed their malice thickening the air.
+
+    Days later, the babaylan led them to Carlo’s lair across the river. Only Ruben hesitated—his boat could barely fit them all. By nightfall, the others hadn’t returned. Forced to swim the treacherous currents, Ruben and his allies arrived to a nightmare: the babaylan was bound to a tree, dying. Her companions lay headless. Surrounding them were Carlo’s hybrids—aswang with obsidian skin and fanged grins.
+
+    Carlo offered a twisted bargain: kneel, renounce their magic, and live. Defiance meant death. One by one, the healers refused, chanting spells until their last breaths. The babaylan, impaled through the chest, took two aswang with her. But Ruben, trembling, knelt. Carlo laughed, cursing him: "Your gifts are gone. You’ll live as a fool, forever haunted."
+
+    Ruben barely escaped, swimming back under the cover of darkness. In the years that followed, he never regained his abilities. The resistance was erased, and Carlo’s kind faded into myth. Yet Ruben, though broken, found solace in his family. He’d whisper to those who’d listen: "Evil exists. And sometimes, it wins."`,
+    region: "Pasig",
+    imageUrl: RubenImage,
     featured: false,
   },
   
