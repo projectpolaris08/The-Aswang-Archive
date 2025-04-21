@@ -8,13 +8,16 @@ interface ShamanCardProps {
 
 const ShamanCard: React.FC<ShamanCardProps> = ({ shaman }) => {
   return (
-    <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+    <Link
+      to={`/shamans-healers/${shaman.id}`}
+      className="group block bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] hover:shadow-xl"
+    >
       {/* Image container with type label */}
       <div className="relative">
         <img 
           src={shaman.imageUrl} 
           alt={shaman.name} 
-          className="w-full h-64 object-cover"
+          className="w-full h-64 object-cover transition-transform duration-500 transform group-hover:scale-110"
         />
         <div className="absolute top-2 right-2">
           <span className="px-2 py-1 bg-black bg-opacity-60 text-white text-sm rounded">
@@ -25,7 +28,7 @@ const ShamanCard: React.FC<ShamanCardProps> = ({ shaman }) => {
       
       {/* Content section */}
       <div className="p-6">
-        <h3 className="text-xl font-bold text-white mb-1">{shaman.name}</h3>
+        <h3 className="text-xl font-bold text-white mb-1 group-hover:text-red-500 transition-colors">{shaman.name}</h3>
         <p className="text-sm text-gray-400 mb-3">Origin: {shaman.origin}</p>
         
         <p className="text-gray-300 mb-4 line-clamp-3">
@@ -48,14 +51,11 @@ const ShamanCard: React.FC<ShamanCardProps> = ({ shaman }) => {
           </div>
         )}
         
-        <Link
-          to={`/shamans-healers/${shaman.id}`}
-          className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors"
-        >
+        <span className="text-red-400 group-hover:text-red-300 text-sm font-medium transition-colors">
           Learn more →
-        </Link>
+        </span>
       </div>
-    </div>
+    </Link>
   );
 };
 
