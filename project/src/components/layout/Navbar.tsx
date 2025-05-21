@@ -1,17 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { Moon, Sun, Menu, X, Search } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 interface NavbarProps {
   isDarkMode: boolean;
   toggleDarkMode: () => void;
+  user?: { username: string; role: string } | null;
+  onLogout?: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
+const Navbar: React.FC<NavbarProps> = ({
+  isDarkMode,
+  toggleDarkMode,
+  user,
+  onLogout,
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,6 +43,52 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
     { name: "Regions", path: "/regions" },
     { name: "About", path: "/about" },
   ];
+
+  // Auth links
+  const authLinks = (
+    <>
+      {user ? (
+        <>
+          <span className="text-gray-100 text-sm mr-2">
+            Welcome,{" "}
+            {user.user_metadata?.username || user.email || user.username}
+          </span>
+          <Link
+            to="/submit"
+            className="text-sm uppercase tracking-wider font-medium transition-colors hover:text-red-500 text-gray-100"
+          >
+            Submit Story
+          </Link>
+          {user.user_metadata?.is_admin && (
+            <Link
+              to="/admin"
+              className="text-sm uppercase tracking-wider font-medium transition-colors hover:text-red-500 text-gray-100"
+            >
+              Admin
+            </Link>
+          )}
+          <button
+            onClick={onLogout}
+            className="ml-2 px-3 py-1 rounded bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors"
+          >
+            Logout
+          </button>
+        </>
+      ) : (
+        <button
+          onClick={() => navigate("/login")}
+          className="ml-2 px-3 py-1 rounded bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors"
+        >
+          Login
+        </button>
+      )}
+    </>
+  );
+
+  // Debug print for user object
+  useEffect(() => {
+    console.log("User object:", user);
+  }, [user]);
 
   return (
     <header
@@ -65,10 +119,14 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
                 {link.name}
               </Link>
             ))}
+            {/* Auth Links */}
+            <span className="ml-4 flex items-center space-x-2">
+              {authLinks}
+            </span>
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 md:hidden">
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               className="p-2 rounded-full hover:bg-gray-800 transition-colors"
@@ -124,6 +182,8 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleDarkMode }) => {
                   {link.name}
                 </Link>
               ))}
+              {/* Auth Links for mobile */}
+              <div className="mt-4 flex flex-col space-y-2">{authLinks}</div>
             </nav>
           </div>
         </div>

@@ -25,8 +25,9 @@ export interface Story {
   excerpt: string;
   content: string;
   region: string;
-  imageUrl: string;
+  imageUrl: string | null;
   featured: boolean;
+  created_at?: string;
 }
 
 export interface Region {
