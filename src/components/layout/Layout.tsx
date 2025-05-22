@@ -9,32 +9,16 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ user, onLogout }) => {
-  const [isDarkMode, setIsDarkMode] = useState(true);
-
   useEffect(() => {
-    // Always use dark mode for Bolt-style UI
-    document.body.classList.add("bg-black");
-    document.body.classList.add("text-gray-100");
-
+    document.documentElement.classList.add("dark");
     return () => {
-      document.body.classList.remove("bg-black", "text-gray-100");
+      document.documentElement.classList.remove("dark");
     };
   }, []);
 
-  // We're keeping the toggle functionality in case you want it,
-  // but for Bolt style, we'll default to dark theme
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-black via-gray-900 to-black">
-      <Navbar
-        isDarkMode={isDarkMode}
-        toggleDarkMode={toggleDarkMode}
-        user={user}
-        onLogout={onLogout}
-      />
+      <Navbar isDarkMode={true} user={user} onLogout={onLogout} />
       <main className="flex-grow pt-20">
         <Outlet />
       </main>

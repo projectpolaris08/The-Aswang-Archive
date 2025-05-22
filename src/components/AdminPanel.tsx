@@ -36,6 +36,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ user }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<"stories" | "users">("stories");
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [rejectStory, setRejectStory] = useState<any>(null);
 
   useEffect(() => {
     fetchPendingStories();
@@ -66,9 +69,40 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ user }) => {
 
   const handleStoryAction = async (
     storyId: string,
-    action: "approve" | "reject"
+    userId: string,
+    action: "approve" | "reject",
+    reasonOverride?: string
   ) => {
     try {
+      let reason = "";
+      if (action === "reject") {
+        reason = reasonOverride || "No reason provided.";
+      }
+
+      // 1. Update story status
+      const { error: updateError } = await supabase
+        .from("stories")
+        .update({ status: action === "approve" ? "approved" : "rejected" })
+        .eq("id", storyId);
+
+      if (updateError) throw updateError;
+
+      // 2. Insert notification for the user
+      const message =
+        action === "approve"
+          ? "Your story has been approved and is now public!"
+          : `Your story was rejected. Reason: ${reason}`;
+
+      await supabase.from("notifications").insert([
+        {
+          target_type: "user",
+          user_id: userId,
+          story_id: storyId,
+          type: action === "approve" ? "approved" : "rejected",
+          message,
+        },
+      ]);
+
       fetchPendingStories();
     } catch (err: any) {
       setError(err.message);
@@ -144,13 +178,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ user }) => {
                   <div className="flex space-x-2 mt-2">
                     <button
                       className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-                      // onClick={...}
+                      onClick={() =>
+                        handleStoryAction(story.id, story.user_id, "approve")
+                      }
                     >
                       Approve
                     </button>
                     <button
                       className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-                      // onClick={...}
+                      onClick={() => {
+                        setRejectStory(story);
+                        setRejectReason("");
+                        setShowRejectModal(true);
+                      }}
                     >
                       Reject
                     </button>
@@ -166,6 +206,50 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ user }) => {
         <div className="space-y-4">
           <h2 className="text-2xl font-bold mb-4">User Management</h2>
           {/* Placeholder: Render users here */}
+        </div>
+      )}
+
+      {showRejectModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-zinc-900 p-6 rounded shadow-lg w-full max-w-md">
+            <h2 className="text-lg font-bold mb-4 text-red-500">
+              Reject Story
+            </h2>
+            <p className="mb-2 text-gray-200">
+              Please provide a reason for rejection:
+            </p>
+            <textarea
+              className="w-full p-2 rounded bg-zinc-800 text-gray-100 border border-zinc-700 mb-4"
+              rows={3}
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="Enter reason..."
+            />
+            <div className="flex justify-end space-x-2">
+              <button
+                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                onClick={() => setShowRejectModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                onClick={async () => {
+                  if (rejectStory) {
+                    await handleStoryAction(
+                      rejectStory.id,
+                      rejectStory.user_id,
+                      "reject",
+                      rejectReason
+                    );
+                  }
+                  setShowRejectModal(false);
+                }}
+              >
+                Reject
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

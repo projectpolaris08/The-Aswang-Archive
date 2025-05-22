@@ -5,13 +5,43 @@ import { Story } from "../types/index";
 import StoryDetail from "../components/stories/StoryDetail";
 import StoryCard from "../components/stories/StoryCard";
 import { ArrowLeft } from "lucide-react";
+import { supabase } from "../supabaseClient";
 
 const StoryDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [relatedStories, setRelatedStories] = useState<Story[]>([]);
+  const [story, setStory] = useState<Story | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Find the selected story
-  const story = stories.find((s) => s.id === id);
+  useEffect(() => {
+    const fetchStory = async () => {
+      // Try static stories first
+      let found = stories.find((s) => s.id === id);
+      if (found) {
+        setStory(found);
+        setLoading(false);
+        return;
+      }
+      // Try Supabase
+      const { data, error } = await supabase
+        .from("stories")
+        .select("*")
+        .eq("id", id)
+        .eq("status", "approved")
+        .single();
+      if (data) {
+        setStory({
+          ...data,
+          imageUrl: data.image_url || data.imageUrl,
+          featured: data.featured || false,
+          region: data.region || "",
+          excerpt: data.excerpt || data.content?.slice(0, 120) || "",
+        });
+      }
+      setLoading(false);
+    };
+    fetchStory();
+  }, [id]);
 
   useEffect(() => {
     if (story) {
@@ -23,6 +53,14 @@ const StoryDetailPage: React.FC = () => {
       setRelatedStories(related);
     }
   }, [story]);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <p className="text-gray-300 text-xl mb-4">Loading story...</p>
+      </div>
+    );
+  }
 
   if (!story) {
     return (

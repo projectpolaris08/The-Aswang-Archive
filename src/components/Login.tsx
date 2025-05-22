@@ -41,12 +41,31 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black py-4 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-serif font-bold text-gray-100">
-            Sign in to your account
+        <div className="flex flex-col items-center justify-center">
+          <div className="bg-gray-800/60 rounded-full p-4 mb-3 shadow-md">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-10 w-10 text-gray-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z"
+              />
+            </svg>
+          </div>
+          <h2 className="text-center text-3xl font-serif font-bold text-gray-100 mb-1">
+            Welcome
           </h2>
+          <p className="text-center text-base text-gray-400 font-normal mb-2">
+            Sign in to your account
+          </p>
         </div>
         <div className="mt-8 space-y-6">
           <div className="space-y-3">

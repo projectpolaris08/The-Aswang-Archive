@@ -71,7 +71,7 @@ export const stories: Story[] = [
     Ruben barely escaped, swimming back under the cover of darkness. In the years that followed, he never regained his abilities. The resistance was erased, and Carlo’s kind faded into myth. Yet Ruben, though broken, found solace in his family. He’d whisper to those who’d listen: "Evil exists. And sometimes, it wins."`,
     region: "Pasig",
     imageUrl: RubenImage,
-    featured: false,
+    featured: true,
   },
   
   {
@@ -104,7 +104,7 @@ export const stories: Story[] = [
     To this day, Capiz is known as the "Aswang Capital of the Philippines," and many locals still take precautions against these mythical creatures, especially during the night.`,
     region: "Visayas",
     imageUrl: AswangImage,
-    featured: false,
+    featured: true,
   },
   {
     id: "5",
@@ -192,7 +192,7 @@ export const stories: Story[] = [
     Local elders say that to avoid being tricked by the Tikbalang King, one must wear their clothes inside out and ask permission before entering the forest. Some also claim that if you can manage to pluck a golden hair from his mane, he will grant you a wish.`,
     region: "Luzon",
     imageUrl: TikbalangImage,
-    featured: false,
+    featured: true,
   },
   {
     id: "10",
