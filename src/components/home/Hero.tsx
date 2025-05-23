@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroBg from "../../assets/hero-bg.jpg";
+import HeroBackground from "../../assets/HeroBackground.jpg";
 
 const Hero: React.FC = () => {
   return (
@@ -10,7 +10,7 @@ const Hero: React.FC = () => {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
         style={{
-          backgroundImage: `url(${heroBg})`,
+          backgroundImage: `url(${HeroBackground})`,
           filter: "brightness(0.4)",
         }}
       ></div>
@@ -23,7 +23,9 @@ const Hero: React.FC = () => {
             <span className="text-red-500">Filipino Mythology</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-200 mb-8">
-          Dive into the hidden world of Filipino folklore, where ancient spirits, eerie legends, and supernatural encounters have been passed down through generations.
+            Dive into the hidden world of Filipino folklore, where ancient
+            spirits, eerie legends, and supernatural encounters have been passed
+            down through generations.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link
