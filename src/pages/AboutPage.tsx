@@ -1,9 +1,18 @@
 import React from "react";
+import AboutUs from "../assets/AboutUs.jpg";
 
 const AboutPage: React.FC = () => {
   return (
-    <div className="bg-gray-900 min-h-screen py-16">
-      <div className="container mx-auto px-4">
+    <div className="bg-gray-900 min-h-screen py-16 relative">
+      {/* Background image with overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+        style={{
+          backgroundImage: `url(${AboutUs})`,
+          filter: "brightness(0.3)",
+        }}
+      ></div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
           <h1 className="font-serif text-4xl font-bold text-white mb-8 text-center">
             About The Aswang Archieve
@@ -116,13 +125,6 @@ const AboutPage: React.FC = () => {
                 mythology.
               </p>
             </div>
-          </div>
-
-          <div className="text-center">
-            <p className="text-gray-400">
-              © {new Date().getFullYear()} The Aswang Project. All rights
-              reserved.
-            </p>
           </div>
         </div>
       </div>

@@ -8,13 +8,18 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [agreePolicy, setAgreePolicy] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    const { data, error } = await supabase.auth.signInWithPassword({
+    if (!agreePolicy) {
+      setError("You must agree to the Privacy Policy to sign in.");
+      return;
+    }
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -27,7 +32,7 @@ const Login: React.FC = () => {
   };
 
   const handleGoogleLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
     });
     if (error) setError(error.message);
@@ -148,6 +153,29 @@ const Login: React.FC = () => {
                 >
                   Sign in
                 </button>
+              </div>
+              <div className="flex items-center mt-2">
+                <input
+                  id="privacy-policy"
+                  type="checkbox"
+                  checked={agreePolicy}
+                  onChange={(e) => setAgreePolicy(e.target.checked)}
+                  className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                />
+                <label
+                  htmlFor="privacy-policy"
+                  className="ml-2 block text-sm text-gray-400"
+                >
+                  I agree to the
+                  <a
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-red-500 underline ml-1"
+                  >
+                    Privacy Policy
+                  </a>
+                </label>
               </div>
 
               <div className="text-center">

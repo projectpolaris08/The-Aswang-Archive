@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import HeroBackground from "../../assets/HeroBackground.jpg";
+import Horror from "../../assets/Horror.jpg";
 
 const Hero: React.FC = () => {
   return (
@@ -10,7 +10,7 @@ const Hero: React.FC = () => {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
         style={{
-          backgroundImage: `url(${HeroBackground})`,
+          backgroundImage: `url(${Horror})`,
           filter: "brightness(0.4)",
         }}
       ></div>

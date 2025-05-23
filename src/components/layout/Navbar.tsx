@@ -1,21 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Moon, Sun, Menu, X, Search, Shield, LogOut, Bell } from "lucide-react";
+import { Menu, X, Search, LogOut, Bell } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 
 interface NavbarProps {
-  isDarkMode: boolean;
-  toggleDarkMode: () => void;
   user?: any;
   onLogout?: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({
-  isDarkMode,
-  toggleDarkMode,
-  user,
-  onLogout,
-}) => {
+const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
