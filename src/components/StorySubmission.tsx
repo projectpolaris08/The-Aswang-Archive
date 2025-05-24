@@ -1,22 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import { Session } from "@supabase/supabase-js";
-
-// Add Story interface
-interface Story {
-  id: string;
-  title: string;
-  excerpt: string;
-  region: string;
-  content: string;
-  imageUrl?: string | null;
-  image_url?: string | null;
-  user_id?: string;
-  status?: string;
-  created_at?: string;
-  featured?: boolean;
-}
 
 interface StorySubmissionProps {
   session: Session;
@@ -30,7 +14,6 @@ const StorySubmission: React.FC<StorySubmissionProps> = ({ session }) => {
   const [success, setSuccess] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [region, setRegion] = useState("");
-  const navigate = useNavigate();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -51,8 +34,9 @@ const StorySubmission: React.FC<StorySubmissionProps> = ({ session }) => {
       if (image) {
         const fileExt = image.name.split(".").pop();
         const fileName = `${session.user.id}-${Date.now()}.${fileExt}`;
-        const { data: storageData, error: storageError } =
-          await supabase.storage.from("story-images").upload(fileName, image);
+        const { error: storageError } = await supabase.storage
+          .from("story-images")
+          .upload(fileName, image);
         if (storageError) throw storageError;
         // Get public URL
         const { data: publicUrlData } = supabase.storage

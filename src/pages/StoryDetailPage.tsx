@@ -6,12 +6,16 @@ import StoryDetail from "../components/stories/StoryDetail";
 import StoryCard from "../components/stories/StoryCard";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "../supabaseClient";
+import CommentsSection from "../components/comments/CommentsSection";
 
 const StoryDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [relatedStories, setRelatedStories] = useState<Story[]>([]);
   const [story, setStory] = useState<Story | null>(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [upvotes, setUpvotes] = useState<number>(0);
+  const [hasUpvoted, setHasUpvoted] = useState(false);
 
   useEffect(() => {
     const fetchStory = async () => {
@@ -23,7 +27,7 @@ const StoryDetailPage: React.FC = () => {
         return;
       }
       // Try Supabase
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("stories")
         .select("*")
         .eq("id", id)
@@ -53,6 +57,95 @@ const StoryDetailPage: React.FC = () => {
       setRelatedStories(related);
     }
   }, [story]);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+  }, []);
+
+  useEffect(() => {
+    if (story && isUUID(story.id)) {
+      supabase
+        .from("stories")
+        .select("upvotes")
+        .eq("id", story.id)
+        .single()
+        .then(({ data }) => {
+          if (data) setUpvotes(data.upvotes);
+        });
+    }
+  }, [story]);
+
+  useEffect(() => {
+    const checkUpvote = async () => {
+      if (user && story && isUUID(story.id)) {
+        const { data } = await supabase
+          .from("story_upvotes")
+          .select("id")
+          .eq("story_id", story.id)
+          .eq("user_id", user.id)
+          .single();
+        setHasUpvoted(!!data);
+      } else {
+        setHasUpvoted(false);
+      }
+    };
+    checkUpvote();
+  }, [user, story]);
+
+  const handleLike = async () => {
+    if (!story || !isUUID(story.id) || !user) return;
+
+    if (hasUpvoted) {
+      // Unlike: remove from story_upvotes and decrement
+      await supabase
+        .from("story_upvotes")
+        .delete()
+        .eq("story_id", story.id)
+        .eq("user_id", user.id);
+
+      const { data, error } = await supabase
+        .from("stories")
+        .update({ upvotes: upvotes - 1 })
+        .eq("id", story.id)
+        .select()
+        .single();
+
+      if (!error && data) {
+        setUpvotes(data.upvotes);
+        setHasUpvoted(false);
+      }
+    } else {
+      // Like: insert into story_upvotes and increment
+      await supabase
+        .from("story_upvotes")
+        .insert([{ story_id: story.id, user_id: user.id }]);
+
+      const { data, error } = await supabase
+        .from("stories")
+        .update({ upvotes: upvotes + 1 })
+        .eq("id", story.id)
+        .select()
+        .single();
+
+      if (!error && data) {
+        setUpvotes(data.upvotes);
+        setHasUpvoted(true);
+        if (data.upvotes >= 100 && !data.featured) {
+          await supabase
+            .from("stories")
+            .update({ featured: true })
+            .eq("id", story.id);
+        }
+      }
+    }
+  };
+
+  // Helper function to check for UUID
+  function isUUID(id: string) {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      id
+    );
+  }
 
   if (loading) {
     return (
@@ -88,7 +181,17 @@ const StoryDetailPage: React.FC = () => {
           Back to all stories
         </Link>
 
-        <StoryDetail story={story} />
+        <StoryDetail
+          story={story}
+          upvotes={story && isUUID(story.id) ? upvotes : undefined}
+          onUpvote={story && isUUID(story.id) ? handleLike : undefined}
+          hasUpvoted={hasUpvoted}
+        />
+
+        {/* Comments Section: Only for Supabase stories with UUID id */}
+        {story && isUUID(story.id) && (
+          <CommentsSection storyId={story.id} user={user} />
+        )}
 
         {/* Related stories */}
         {relatedStories.length > 0 && (

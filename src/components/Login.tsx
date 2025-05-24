@@ -9,6 +9,7 @@ const Login: React.FC = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [agreePolicy, setAgreePolicy] = useState(false);
+  const [showGoogleModal, setShowGoogleModal] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,10 +33,7 @@ const Login: React.FC = () => {
   };
 
   const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
-    if (error) setError(error.message);
+    setShowGoogleModal(true);
   };
 
   return (
@@ -194,6 +192,25 @@ const Login: React.FC = () => {
           </div>
         </div>
       </div>
+      {showGoogleModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
+          <div className="bg-gray-900 rounded-lg p-6 shadow-lg text-center">
+            <h3 className="text-lg font-bold text-white mb-2">Coming Soon</h3>
+            <p className="text-gray-300 mb-2">
+              This feature is currently in development.
+            </p>
+            <p className="text-gray-400 mb-4">
+              Please sign in with your email and password below.
+            </p>
+            <button
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              onClick={() => setShowGoogleModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

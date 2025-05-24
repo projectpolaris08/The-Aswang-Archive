@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Menu, X, Search, LogOut, Bell } from "lucide-react";
+import { Menu, X, Search, LogOut, Bell, UserCircle } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 
@@ -237,6 +237,21 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
 
           {/* User Actions - Right */}
           <div className="hidden md:flex items-center space-x-2 min-w-[180px] justify-end">
+            {user && (
+              <Link to="/profile" className="flex items-center mr-2 group" title="Profile">
+                {user.user_metadata?.avatar_url ? (
+                  <img
+                    src={user.user_metadata.avatar_url}
+                    alt="avatar"
+                    className="w-8 h-8 rounded-full border-2 border-gray-700 group-hover:border-red-500 transition-all"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold text-lg">
+                    {user.user_metadata?.username?.[0]?.toUpperCase() || <UserCircle className="w-6 h-6" />}
+                  </div>
+                )}
+              </Link>
+            )}
             {user && (
               <div className="relative" ref={notifDropdownRef}>
                 <button

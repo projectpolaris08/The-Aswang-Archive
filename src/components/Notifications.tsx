@@ -1,23 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 
-const Notifications = ({ user }) => {
-  const [notifications, setNotifications] = useState([]);
+interface Notification {
+  id: string;
+  message: string;
+  created_at: string;
+  [key: string]: any;
+}
+
+interface NotificationsProps {
+  user: { id: string } | null;
+}
+
+const Notifications: React.FC<NotificationsProps> = ({ user }) => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
     if (!user) return;
     const fetchNotifications = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("notifications")
         .select("*")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
-      setNotifications(data || []);
+      setNotifications((data as Notification[]) || []);
     };
     fetchNotifications();
   }, [user]);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     await supabase.from("notifications").delete().eq("id", id);
     setNotifications((prev) => prev.filter((notif) => notif.id !== id));
   };

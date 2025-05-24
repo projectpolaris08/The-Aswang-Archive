@@ -2,24 +2,45 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import SocialButton from "./auth/SocialButton";
+import AvatarPicker from "./AvatarPicker";
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [avatar, setAvatar] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showGoogleModal, setShowGoogleModal] = useState(false);
   const navigate = useNavigate();
+
+  const handleAvatarUpload = async (file: File) => {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${username}_${Date.now()}.${fileExt}`;
+    const filePath = `public/${fileName}`;
+    const { error } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, file, {
+        cacheControl: "3600",
+        upsert: true,
+      });
+    if (error) {
+      setError("Avatar upload failed.");
+      return "";
+    }
+    const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
+    return data.publicUrl;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { username },
+        data: { username, avatar_url: avatar },
       },
     });
     if (error) {
@@ -29,21 +50,12 @@ const Register: React.FC = () => {
       setUsername("");
       setEmail("");
       setPassword("");
+      setAvatar(null);
     }
   };
 
   const handleGoogleLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
-    if (error) setError(error.message);
-  };
-
-  const handleMicrosoftLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "azure",
-    });
-    if (error) setError(error.message);
+    setShowGoogleModal(true);
   };
 
   return (
@@ -60,7 +72,6 @@ const Register: React.FC = () => {
         <div className="mt-8 space-y-6">
           <div className="space-y-3">
             <SocialButton provider="google" onClick={handleGoogleLogin} />
-            <SocialButton provider="microsoft" onClick={handleMicrosoftLogin} />
           </div>
 
           <div className="relative">
@@ -141,6 +152,18 @@ const Register: React.FC = () => {
               </div>
             </div>
 
+            {/* Avatar Picker */}
+            <div>
+              <label className="block text-gray-400 mb-2">
+                Choose an avatar
+              </label>
+              <AvatarPicker
+                value={avatar}
+                onChange={setAvatar}
+                onUpload={handleAvatarUpload}
+              />
+            </div>
+
             <div>
               <button
                 type="submit"
@@ -165,6 +188,25 @@ const Register: React.FC = () => {
           </form>
         </div>
       </div>
+      {showGoogleModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
+          <div className="bg-gray-900 rounded-lg p-6 shadow-lg text-center">
+            <h3 className="text-lg font-bold text-white mb-2">Coming Soon</h3>
+            <p className="text-gray-300 mb-2">
+              This feature is currently in development.
+            </p>
+            <p className="text-gray-400 mb-4">
+              Kindly complete the registration by filling out the form below.
+            </p>
+            <button
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              onClick={() => setShowGoogleModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { stories as staticStories } from "../data/stories";
 import StoryCard from "../components/stories/StoryCard";
 import { Search } from "lucide-react";
@@ -24,6 +24,8 @@ const StoriesPage: React.FC = () => {
   const [allStories, setAllStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchSupabaseStories();
@@ -89,6 +91,34 @@ const StoriesPage: React.FC = () => {
     return matchesSearch && matchesRegion && matchesFeatured;
   });
 
+  // Pagination logic (must be after filteredStories is defined)
+  const [currentPage, setCurrentPage] = useState(1);
+  const storiesPerPage = 6;
+  const totalPages = Math.ceil(filteredStories.length / storiesPerPage);
+  const startIdx = (currentPage - 1) * storiesPerPage;
+  const endIdx = startIdx + storiesPerPage;
+  const paginatedStories = filteredStories.slice(startIdx, endIdx);
+
+  // Pagination handlers
+  const handlePrevPage = () => {
+    setCurrentPage((p) => {
+      const newPage = Math.max(1, p - 1);
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 0);
+      return newPage;
+    });
+  };
+  const handleNextPage = () => {
+    setCurrentPage((p) => {
+      const newPage = Math.min(totalPages, p + 1);
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 0);
+      return newPage;
+    });
+  };
+
   if (loading) {
     return (
       <div className="bg-gray-900 min-h-screen py-16 relative">
@@ -136,7 +166,7 @@ const StoriesPage: React.FC = () => {
         }}
       ></div>
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-4xl mx-auto text-center mb-12">
+        <div ref={headerRef} className="max-w-4xl mx-auto text-center mb-12">
           <h1 className="font-serif text-4xl font-bold text-white mb-4">
             Legendary Tales
           </h1>
@@ -187,11 +217,36 @@ const StoriesPage: React.FC = () => {
 
         {/* Results */}
         {filteredStories.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-20 mb-12">
-            {filteredStories.map((story) => (
-              <StoryCard key={story.id} story={story} />
-            ))}
-          </div>
+          <>
+            <div
+              ref={gridRef}
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-20 mb-12"
+            >
+              {paginatedStories.map((story) => (
+                <StoryCard key={story.id} story={story} />
+              ))}
+            </div>
+            {/* Pagination Controls */}
+            <div className="flex justify-center items-center gap-4 mt-4">
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="text-white">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </>
         ) : (
           <div className="text-center py-12">
             <p className="text-gray-400 text-lg">

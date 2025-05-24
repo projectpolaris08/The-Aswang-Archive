@@ -26,6 +26,7 @@ import StorySubmission from "./components/StorySubmission";
 import AdminPanel from "./components/AdminPanel";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import ProfilePage from "./pages/ProfilePage";
 
 // ScrollToTop component that will handle smooth scroll behavior
 function ScrollToTop() {
@@ -115,6 +116,7 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/termsofservice" element={<TermsOfService />} />
           <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

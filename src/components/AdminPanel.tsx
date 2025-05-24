@@ -12,13 +12,6 @@ interface Story {
   status: "pending" | "approved" | "rejected";
 }
 
-interface User {
-  _id: string;
-  username: string;
-  email: string;
-  role: "user" | "admin";
-}
-
 interface AdminPanelProps {
   user?: any;
 }
@@ -33,7 +26,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ user }) => {
   }
 
   const [pendingStories, setPendingStories] = useState<Story[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<"stories" | "users">("stories");
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -42,7 +34,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ user }) => {
 
   useEffect(() => {
     fetchPendingStories();
-    fetchUsers();
   }, []);
 
   const fetchPendingStories = async () => {
@@ -54,14 +45,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ user }) => {
         .order("created_at", { ascending: false });
       if (error) throw error;
       setPendingStories(data || []);
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      setUsers([]);
     } catch (err: any) {
       setError(err.message);
     }
@@ -104,14 +87,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ user }) => {
       ]);
 
       fetchPendingStories();
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
-
-  const handleMakeAdmin = async (userId: string) => {
-    try {
-      fetchUsers();
     } catch (err: any) {
       setError(err.message);
     }
