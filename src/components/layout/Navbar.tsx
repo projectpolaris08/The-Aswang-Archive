@@ -206,8 +206,14 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <span className="font-serif text-xl md:text-2xl font-bold text-red-500">
+          <Link to="/" className="flex items-center group">
+            <img
+              src="/white-witch.png"
+              alt="The Aswang Archive Logo"
+              className="h-8 w-8 mr-2 transition duration-300 group-hover:filter group-hover:invert-14 group-hover:sepia group-hover:saturate-500 group-hover:hue-rotate-[-50deg] group-hover:brightness-100 group-hover:contrast-100 group-hover:drop-shadow-[0_0_4px_rgba(229,62,62,0.7)]"
+              style={{ filter: "none" }}
+            />
+            <span className="font-serif text-xl md:text-2xl font-bold text-red-500 group-hover:text-red-400 transition-colors">
               The Aswang Archive
             </span>
           </Link>
