@@ -27,7 +27,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
 
   return (
     <div>
-      <div className="flex gap-4 mb-4 flex-wrap">
+      <div className="grid grid-cols-5 gap-4 mb-4">
         {defaultAvatars.map((avatar, idx) => (
           <button
             type="button"
