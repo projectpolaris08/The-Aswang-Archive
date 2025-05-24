@@ -2,14 +2,23 @@ import React from "react";
 import { stories } from "../../data/stories";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import LegendaryBg from "../../assets/Legendary.jpg";
 
 const FeaturedStories: React.FC = () => {
   // Filter only featured stories
   const featuredStories = stories.filter((story) => story.featured);
 
   return (
-    <section className="py-16 bg-gray-900">
-      <div className="container mx-auto px-4">
+    <section className="py-16 bg-gray-900 relative">
+      {/* Background image with overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+        style={{
+          backgroundImage: `url(${LegendaryBg})`,
+          filter: "brightness(0.4)",
+        }}
+      ></div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
           <div>
             <h2 className="font-serif text-3xl font-bold text-white mb-2">

@@ -3,6 +3,7 @@ import { Shaman } from "../types";
 import { shamansHealers } from "../data/shamanHealers";
 import { Search } from "lucide-react";
 import ShamanCard from "../components/shamanHealers/ShamanCard";
+import CreaturesBg from "../assets/creatures.jpg";
 
 const ShamansHealersPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,8 +32,16 @@ const ShamansHealersPage: React.FC = () => {
   });
 
   return (
-    <div className="bg-gray-900 min-h-screen py-16">
-      <div className="container mx-auto px-4">
+    <div className="bg-gray-900 min-h-screen py-16 relative">
+      {/* Background image with overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+        style={{
+          backgroundImage: `url(${CreaturesBg})`,
+          filter: "brightness(0.4)",
+        }}
+      ></div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center mb-12">
           <h1 className="font-serif text-4xl font-bold text-white mb-4">
             Shamans & Healers

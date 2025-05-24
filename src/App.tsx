@@ -113,8 +113,8 @@ function App() {
           <Route path="/regions" element={<RegionsPage />} />
           <Route path="/regions/:id" element={<RegionDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/terms" element={<TermsOfService />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/termsofservice" element={<TermsOfService />} />
+          <Route path="/privacypolicy" element={<PrivacyPolicy />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

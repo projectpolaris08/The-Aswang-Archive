@@ -3,6 +3,7 @@ import { stories as staticStories } from "../data/stories";
 import StoryCard from "../components/stories/StoryCard";
 import { Search } from "lucide-react";
 import { supabase } from "../supabaseClient";
+import LegendaryBg from "../assets/Legendary.jpg";
 
 interface Story {
   id: string;
@@ -90,8 +91,16 @@ const StoriesPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="bg-gray-900 min-h-screen py-16">
-        <div className="container mx-auto px-4 text-center">
+      <div className="bg-gray-900 min-h-screen py-16 relative">
+        {/* Background image with overlay */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+          style={{
+            backgroundImage: `url(${LegendaryBg})`,
+            filter: "brightness(0.4)",
+          }}
+        ></div>
+        <div className="container mx-auto px-4 text-center relative z-10">
           <p className="text-gray-300">Loading stories...</p>
         </div>
       </div>
@@ -100,8 +109,16 @@ const StoriesPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="bg-gray-900 min-h-screen py-16">
-        <div className="container mx-auto px-4 text-center">
+      <div className="bg-gray-900 min-h-screen py-16 relative">
+        {/* Background image with overlay */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+          style={{
+            backgroundImage: `url(${LegendaryBg})`,
+            filter: "brightness(0.4)",
+          }}
+        ></div>
+        <div className="container mx-auto px-4 text-center relative z-10">
           <p className="text-red-500">Error loading stories: {error}</p>
         </div>
       </div>
@@ -109,8 +126,16 @@ const StoriesPage: React.FC = () => {
   }
 
   return (
-    <div className="bg-gray-900 min-h-screen py-16">
-      <div className="container mx-auto px-4">
+    <div className="bg-gray-900 min-h-screen py-16 relative">
+      {/* Background image with overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+        style={{
+          backgroundImage: `url(${LegendaryBg})`,
+          filter: "brightness(0.4)",
+        }}
+      ></div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center mb-12">
           <h1 className="font-serif text-4xl font-bold text-white mb-4">
             Legendary Tales
