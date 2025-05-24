@@ -39,7 +39,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center lg:items-start justify-center bg-gradient-to-br from-black via-gray-900 to-black py-4 px-4 sm:px-6 lg:px-8 lg:pt-24">
+    <div className="min-h-screen flex items-start justify-center bg-gradient-to-br from-black via-gray-900 to-black py-4 px-4 sm:px-6 lg:px-8 pt-16 lg:pt-24">
       <div className="relative flex items-center justify-center w-full max-w-md">
         {/* Subtle white glowing effect at the edge */}
         <div

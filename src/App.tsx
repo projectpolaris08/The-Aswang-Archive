@@ -24,6 +24,8 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import StorySubmission from "./components/StorySubmission";
 import AdminPanel from "./components/AdminPanel";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 // ScrollToTop component that will handle smooth scroll behavior
 function ScrollToTop() {
@@ -111,6 +113,8 @@ function App() {
           <Route path="/regions" element={<RegionsPage />} />
           <Route path="/regions/:id" element={<RegionDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
