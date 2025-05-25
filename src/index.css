@@ -1,3 +1,18 @@
+@import "@tiptap/core/style.css";
+@import "@tiptap/starter-kit/style.css";
+@import "@tiptap/extension-underline/style.css";
+@import "@tiptap/extension-text-align/style.css";
+
+.tiptap-content {
+  /* Minimal container styling, let TipTap handle the rest */
+  background: #27272a;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  border: 1px solid #3f3f46;
+  color: #f4f4f5;
+  word-break: break-word;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

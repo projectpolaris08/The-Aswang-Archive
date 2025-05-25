@@ -67,10 +67,9 @@ const StoryDetail: React.FC<StoryDetailProps> = ({
       </div>
 
       <div className="p-8 max-w-3xl mx-auto">
-        <div
-          className="prose prose-invert prose-lg"
-          dangerouslySetInnerHTML={{ __html: story.content }}
-        />
+        <div className="tiptap-content bg-gray-800 rounded p-4 border border-gray-700 text-gray-100">
+          <div dangerouslySetInnerHTML={{ __html: story.content }} />
+        </div>
       </div>
     </div>
   );
