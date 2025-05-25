@@ -7,7 +7,6 @@ import CommentsPanel from "../components/CommentsPanel";
 import MonetizePanel from "../components/MonetizePanel";
 import SettingsPanel from "../components/SettingsPanel";
 import { Menu, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 const sections = [
   { key: "home", label: "Home" },
@@ -44,7 +43,6 @@ const WriterDashboardPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState("home");
   const [user, setUser] = useState<any>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -54,12 +52,6 @@ const WriterDashboardPage: React.FC = () => {
       }
     });
   }, []);
-
-  useEffect(() => {
-    if (user === null) {
-      navigate("/");
-    }
-  }, [user, navigate]);
 
   // Responsive sidebar toggle
   const handleSidebarToggle = () => setSidebarOpen((open) => !open);
