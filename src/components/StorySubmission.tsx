@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { supabase } from "../supabaseClient";
 import { Session } from "@supabase/supabase-js";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
+import TextAlign from "@tiptap/extension-text-align";
 
 interface StorySubmissionProps {
   session: Session;
@@ -14,6 +18,20 @@ const StorySubmission: React.FC<StorySubmissionProps> = ({ session }) => {
   const [success, setSuccess] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [region, setRegion] = useState("");
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+    ],
+    content: content,
+    onUpdate: ({ editor }) => {
+      setContent(editor.getHTML());
+    },
+  });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -186,14 +204,93 @@ const StorySubmission: React.FC<StorySubmissionProps> = ({ session }) => {
             >
               Story Content
             </label>
-            <textarea
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-              rows={6}
-              className="mt-1 block w-full rounded-md border border-gray-700 bg-gray-900 text-gray-100 placeholder-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm px-3 py-2"
-            />
+            <div className="border border-gray-700 rounded-md bg-gray-900">
+              <div className="border-b border-gray-700 p-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => editor?.chain().focus().toggleBold().run()}
+                  className={`p-2 rounded hover:bg-gray-800 ${
+                    editor?.isActive("bold") ? "bg-gray-800" : ""
+                  }`}
+                >
+                  <strong>B</strong>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor?.chain().focus().toggleItalic().run()}
+                  className={`p-2 rounded hover:bg-gray-800 ${
+                    editor?.isActive("italic") ? "bg-gray-800" : ""
+                  }`}
+                >
+                  <em>I</em>
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor?.chain().focus().toggleUnderline().run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-800 ${
+                    editor?.isActive("underline") ? "bg-gray-800" : ""
+                  }`}
+                >
+                  <u>U</u>
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor?.chain().focus().toggleHeading({ level: 2 }).run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-800 ${
+                    editor?.isActive("heading", { level: 2 })
+                      ? "bg-gray-800"
+                      : ""
+                  }`}
+                >
+                  H2
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor?.chain().focus().setTextAlign("left").run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-800 ${
+                    editor?.isActive({ textAlign: "left" }) ? "bg-gray-800" : ""
+                  }`}
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor?.chain().focus().setTextAlign("center").run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-800 ${
+                    editor?.isActive({ textAlign: "center" })
+                      ? "bg-gray-800"
+                      : ""
+                  }`}
+                >
+                  ↔
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor?.chain().focus().setTextAlign("right").run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-800 ${
+                    editor?.isActive({ textAlign: "right" })
+                      ? "bg-gray-800"
+                      : ""
+                  }`}
+                >
+                  →
+                </button>
+              </div>
+              <EditorContent
+                editor={editor}
+                className="prose prose-invert max-w-none p-4 min-h-[200px]"
+              />
+            </div>
           </div>
 
           <div>
