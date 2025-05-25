@@ -147,6 +147,8 @@ const StoryDetailPage: React.FC = () => {
     );
   }
 
+  const canUpvote = !!(user && story && isUUID(story.id));
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
@@ -186,6 +188,7 @@ const StoryDetailPage: React.FC = () => {
           upvotes={story && isUUID(story.id) ? upvotes : undefined}
           onUpvote={story && isUUID(story.id) ? handleLike : undefined}
           hasUpvoted={hasUpvoted}
+          canUpvote={canUpvote}
         />
 
         {/* Comments Section: Only for Supabase stories with UUID id */}
