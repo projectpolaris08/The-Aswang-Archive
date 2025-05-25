@@ -41,6 +41,13 @@ const StoryDetailPage: React.FC = () => {
           region: data.region || "",
           excerpt: data.excerpt || data.content?.slice(0, 120) || "",
         });
+        // Increment views
+        if (data.id) {
+          await supabase
+            .from("stories")
+            .update({ views: (data.views || 0) + 1 })
+            .eq("id", data.id);
+        }
       }
       setLoading(false);
     };
@@ -148,6 +155,10 @@ const StoryDetailPage: React.FC = () => {
   }
 
   const canUpvote = !!(user && story && isUUID(story.id));
+  console.log("DEBUG user:", user);
+  console.log("DEBUG story:", story);
+  console.log("DEBUG isUUID(story.id):", story ? isUUID(story.id) : null);
+  console.log("DEBUG canUpvote:", canUpvote);
 
   if (loading) {
     return (

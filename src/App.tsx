@@ -27,6 +27,10 @@ import AdminPanel from "./components/AdminPanel";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ProfilePage from "./pages/ProfilePage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
+import WriterDashboardPage from "./pages/WriterDashboardPage";
 
 // ScrollToTop component that will handle smooth scroll behavior
 function ScrollToTop() {
@@ -117,6 +121,15 @@ function App() {
           <Route path="/termsofservice" element={<TermsOfService />} />
           <Route path="/privacypolicy" element={<PrivacyPolicy />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route
+            path="/change-password"
+            element={
+              session ? <ChangePasswordPage /> : <Navigate to="/login" />
+            }
+          />
+          <Route path="/writer" element={<WriterDashboardPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

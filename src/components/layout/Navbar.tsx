@@ -20,6 +20,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [toast, setToast] = useState<string | null>(null);
   const notifDropdownRef = useRef(null);
+  const [showMythsDropdown, setShowMythsDropdown] = useState(false);
 
   // Helper to check if user is admin
   const isAdmin = user?.user_metadata?.is_admin;
@@ -142,11 +143,13 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
 
   const navLinks = [
     { name: "Home", path: "/" },
+    { name: "Stories", path: "/stories" },
+    { name: "About", path: "/about" },
+  ];
+  const mythsDropdownLinks = [
     { name: "Creatures", path: "/creatures" },
     { name: "Shamans & Healers", path: "/shamans-healers" },
-    { name: "Stories", path: "/stories" },
     { name: "Regions", path: "/regions" },
-    { name: "About", path: "/about" },
   ];
 
   // Auth links
@@ -154,19 +157,6 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
     <>
       {user ? (
         <>
-          <span
-            className="text-gray-100 text-sm mr-1 truncate max-w-[90px]"
-            title={user.user_metadata?.username || user.email || user.username}
-          >
-            {(() => {
-              const rawName =
-                user.user_metadata?.username ||
-                user.email ||
-                user.username ||
-                "";
-              return rawName.charAt(0).toUpperCase() + rawName.slice(1);
-            })()}
-          </span>
           <Link
             to="/submit"
             className="px-3 py-1 rounded bg-red-600 text-white text-xs font-semibold hover:bg-red-700 transition-colors ml-1"
@@ -233,24 +223,97 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
                 {link.name}
               </Link>
             ))}
+            {/* Myths & Mystics Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setShowMythsDropdown(true)}
+              onMouseLeave={() => setShowMythsDropdown(false)}
+            >
+              <button
+                className={`text-sm uppercase tracking-wider font-medium transition-colors px-2 py-1 rounded hover:text-red-500 focus:outline-none flex items-center ${
+                  mythsDropdownLinks.some((l) => location.pathname === l.path)
+                    ? "text-red-500"
+                    : "text-gray-100"
+                }`}
+                aria-haspopup="true"
+                aria-expanded={showMythsDropdown}
+                type="button"
+              >
+                Myths & Mystics
+                <svg
+                  className="ml-1 w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {showMythsDropdown && (
+                <div className="absolute left-0 top-full mt-0 w-56 bg-zinc-900 border border-zinc-700 rounded shadow-lg z-50">
+                  <ul className="py-2">
+                    {mythsDropdownLinks.map((link) => (
+                      <li key={link.name}>
+                        <Link
+                          to={link.path}
+                          className={`block px-4 py-2 text-sm text-gray-100 hover:bg-zinc-800 hover:text-red-500 transition-colors ${
+                            location.pathname === link.path
+                              ? "bg-zinc-800 text-red-500"
+                              : ""
+                          }`}
+                          onClick={() => setShowMythsDropdown(false)}
+                        >
+                          {link.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </nav>
-
           {/* User Actions - Right */}
           <div className="hidden md:flex items-center space-x-2 min-w-[180px] justify-end">
             {user && (
-              <Link to="/profile" className="flex items-center mr-2 group" title="Profile">
-                {user.user_metadata?.avatar_url ? (
-                  <img
-                    src={user.user_metadata.avatar_url}
-                    alt="avatar"
-                    className="w-8 h-8 rounded-full border-2 border-gray-700 group-hover:border-red-500 transition-all"
-                  />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold text-lg">
-                    {user.user_metadata?.username?.[0]?.toUpperCase() || <UserCircle className="w-6 h-6" />}
-                  </div>
-                )}
-              </Link>
+              <>
+                <Link
+                  to="/profile"
+                  className="flex items-center mr-2 group"
+                  title="Profile"
+                >
+                  {user.user_metadata?.avatar_url ? (
+                    <img
+                      src={user.user_metadata.avatar_url}
+                      alt="avatar"
+                      className="w-8 h-8 rounded-full border-2 border-gray-700 group-hover:border-red-500 transition-all"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold text-lg">
+                      {user.user_metadata?.username?.[0]?.toUpperCase() || (
+                        <UserCircle className="w-6 h-6" />
+                      )}
+                    </div>
+                  )}
+                  {user.user_metadata?.username && (
+                    <span className="ml-2 text-gray-100 font-medium">
+                      {user.user_metadata.username}
+                    </span>
+                  )}
+                </Link>
+                <Link
+                  to="/writer"
+                  className="px-3 py-1 rounded bg-zinc-700 text-white text-xs font-semibold hover:bg-red-600 transition-colors mr-2"
+                  title="Writer Dashboard"
+                >
+                  Writer Dashboard
+                </Link>
+              </>
             )}
             {user && (
               <div className="relative" ref={notifDropdownRef}>
@@ -416,26 +479,87 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
                   {link.name}
                 </Link>
               ))}
+              {/* Myths & Mystics Dropdown for mobile */}
+              <div className="w-full">
+                <button
+                  className="w-full flex items-center justify-between text-sm uppercase tracking-wider font-medium py-2 text-gray-100 hover:text-red-500 focus:outline-none"
+                  onClick={() => setShowMythsDropdown((prev) => !prev)}
+                  aria-haspopup="true"
+                  aria-expanded={showMythsDropdown}
+                >
+                  <span>Myths & Mystics</span>
+                  <svg
+                    className={`ml-2 w-4 h-4 transform transition-transform ${
+                      showMythsDropdown ? "rotate-180" : "rotate-0"
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+                {showMythsDropdown && (
+                  <ul className="pl-4 border-l border-zinc-700 mt-1">
+                    {mythsDropdownLinks.map((link) => (
+                      <li key={link.name}>
+                        <Link
+                          to={link.path}
+                          className={`block py-2 text-gray-100 hover:text-red-500 transition-colors ${
+                            location.pathname === link.path
+                              ? "text-red-500"
+                              : ""
+                          }`}
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {link.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
               {/* Auth Links for mobile - improved UX */}
               <div className="mt-6 flex flex-col items-center space-y-3 w-full">
                 {user && (
-                  <span
-                    className="text-gray-200 text-base font-semibold mb-3 mt-1 w-full truncate"
-                    title={
-                      user.user_metadata?.username ||
-                      user.email ||
-                      user.username
-                    }
-                  >
-                    {(() => {
-                      const rawName =
-                        user.user_metadata?.username ||
-                        user.email ||
-                        user.username ||
-                        "";
-                      return rawName.charAt(0).toUpperCase() + rawName.slice(1);
-                    })()}
-                  </span>
+                  <>
+                    <Link
+                      to="/profile"
+                      className="flex items-center mr-2 group"
+                      title="Profile"
+                    >
+                      {user.user_metadata?.avatar_url ? (
+                        <img
+                          src={user.user_metadata.avatar_url}
+                          alt="avatar"
+                          className="w-8 h-8 rounded-full border-2 border-gray-700 group-hover:border-red-500 transition-all"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold text-lg">
+                          {user.user_metadata?.username?.[0]?.toUpperCase() || (
+                            <UserCircle className="w-6 h-6" />
+                          )}
+                        </div>
+                      )}
+                      {user.user_metadata?.username && (
+                        <span className="ml-2 text-gray-100 font-medium">
+                          {user.user_metadata.username}
+                        </span>
+                      )}
+                    </Link>
+                    <Link
+                      to="/writer"
+                      className="w-full flex items-center justify-center px-4 py-2 rounded bg-zinc-700 text-white text-base font-semibold hover:bg-red-600 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 mb-2"
+                    >
+                      Writer Dashboard
+                    </Link>
+                  </>
                 )}
                 {user ? (
                   <>

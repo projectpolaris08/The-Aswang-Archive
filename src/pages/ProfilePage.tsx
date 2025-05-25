@@ -178,10 +178,11 @@ const ProfilePage: React.FC = () => {
                   onClick={() => setEditingUsername(true)}
                   title="Edit username"
                   disabled={
-                    lastUsernameChange &&
-                    (new Date().getTime() - lastUsernameChange.getTime()) /
-                      (1000 * 60 * 60 * 24) <
-                      60
+                    lastUsernameChange
+                      ? (new Date().getTime() - lastUsernameChange.getTime()) /
+                          (1000 * 60 * 60 * 24) <
+                        60
+                      : false
                   }
                 >
                   <Pencil className="w-4 h-4" />

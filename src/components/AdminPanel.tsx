@@ -138,21 +138,29 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ user }) => {
           ) : (
             <ul className="space-y-4">
               {pendingStories.map((story: any) => (
-                <li key={story.id} className="bg-gray-800 p-4 rounded shadow">
-                  <h3 className="text-lg font-bold text-red-400">
-                    {story.title}
-                  </h3>
-                  <p className="text-gray-200">{story.content}</p>
-                  {story.image_url && (
-                    <img
-                      src={story.image_url}
-                      alt="Story"
-                      className="mt-2 max-h-48 rounded"
-                    />
-                  )}
-                  <div className="flex space-x-2 mt-2">
+                <li
+                  key={story.id}
+                  className="bg-gray-800 p-4 rounded shadow flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:items-start sm:space-x-6"
+                >
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-bold text-red-400 break-words">
+                      {story.title}
+                    </h3>
+                    <p className="text-gray-200 break-words text-sm sm:text-base">
+                      {story.content}
+                    </p>
+                    {story.image_url && (
+                      <img
+                        src={story.image_url}
+                        alt="Story"
+                        className="mt-2 max-h-48 w-full object-cover rounded"
+                        style={{ maxWidth: "100%" }}
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mt-2 sm:mt-0 w-full sm:w-auto">
                     <button
-                      className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                      className="w-full sm:w-auto mb-2 sm:mb-0 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
                       onClick={() =>
                         handleStoryAction(story.id, story.user_id, "approve")
                       }
@@ -160,7 +168,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ user }) => {
                       Approve
                     </button>
                     <button
-                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                      className="w-full sm:w-auto px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
                       onClick={() => {
                         setRejectStory(story);
                         setRejectReason("");
