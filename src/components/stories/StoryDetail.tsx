@@ -21,18 +21,14 @@ const StoryDetail: React.FC<StoryDetailProps> = ({
 
   return (
     <div className="bg-gray-800 rounded-lg shadow-xl overflow-hidden">
-      <div
-        className="relative w-full flex justify-center items-center bg-black"
-        style={{ minHeight: "200px" }}
-      >
+      <div className="relative w-full flex justify-center items-center bg-black overflow-hidden rounded-t-lg">
         <img
           src={story.imageUrl}
           alt={story.title}
-          className="w-full max-h-[60vh] object-contain"
-          style={{ background: "#111" }}
+          className="w-full object-contain bg-black max-h-[60vh] sm:max-h-[70vh]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent opacity-90"></div>
-        <div className="absolute bottom-0 left-0 p-8">
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent opacity-90 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 p-4 sm:p-8 w-full">
           <div className="flex items-center mb-4">
             {story.featured && (
               <span className="inline-block px-3 py-1 bg-red-600 text-white text-xs rounded-full mr-3">
@@ -43,10 +39,12 @@ const StoryDetail: React.FC<StoryDetailProps> = ({
               {story.region}
             </span>
           </div>
-          <h1 className="font-serif text-4xl font-bold text-white mb-2">
+          <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">
             {story.title}
           </h1>
-          <p className="text-gray-300 max-w-2xl">{story.excerpt}</p>
+          <p className="text-gray-300 max-w-2xl text-sm sm:text-base">
+            {story.excerpt}
+          </p>
           {typeof upvotes === "number" && (
             <div className="mt-4 flex items-center">
               <button
