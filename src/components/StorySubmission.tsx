@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { supabase } from "../supabaseClient";
 import { Session } from "@supabase/supabase-js";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
@@ -18,6 +18,7 @@ const StorySubmission: React.FC<StorySubmissionProps> = ({ session }) => {
   const [success, setSuccess] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [region, setRegion] = useState("");
+  const [author, setAuthor] = useState("");
 
   const editor = useEditor({
     extensions: [
@@ -66,6 +67,7 @@ const StorySubmission: React.FC<StorySubmissionProps> = ({ session }) => {
       // 2. Insert story into Supabase
       console.log({
         title,
+        author,
         excerpt,
         region,
         content,
@@ -78,6 +80,7 @@ const StorySubmission: React.FC<StorySubmissionProps> = ({ session }) => {
         .insert([
           {
             title,
+            author,
             excerpt,
             region,
             content,
@@ -96,7 +99,7 @@ const StorySubmission: React.FC<StorySubmissionProps> = ({ session }) => {
           target_type: "admin",
           type: "pending_review",
           story_id: newStory?.id,
-          message: `New story submitted: ${title} - ${content.substring(
+          message: `New story submitted by ${author}: ${title} - ${content.substring(
             0,
             60
           )}...`,
@@ -105,10 +108,12 @@ const StorySubmission: React.FC<StorySubmissionProps> = ({ session }) => {
 
       setSuccess("Story submitted successfully! Waiting for admin approval.");
       setTitle("");
+      setAuthor("");
       setExcerpt("");
       setRegion("");
       setContent("");
       setImage(null);
+      editor?.commands.clearContent();
       (e.target as HTMLFormElement).reset();
     } catch (err: any) {
       setError(err.message || "Failed to submit story");
@@ -153,6 +158,24 @@ const StorySubmission: React.FC<StorySubmissionProps> = ({ session }) => {
               onChange={(e) => setTitle(e.target.value)}
               required
               className="mt-1 block w-full rounded-md border border-gray-700 bg-gray-900 text-gray-100 placeholder-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="author"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
+              Author
+            </label>
+            <input
+              type="text"
+              id="author"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              required
+              className="mt-1 block w-full rounded-md border border-gray-700 bg-gray-900 text-gray-100 placeholder-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm px-3 py-2"
+              placeholder="Your name or pen name"
             />
           </div>
 
@@ -290,6 +313,49 @@ const StorySubmission: React.FC<StorySubmissionProps> = ({ session }) => {
                 editor={editor}
                 className="prose prose-invert max-w-none p-4 min-h-[200px]"
               />
+              {editor && (
+                <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
+                  <div className="flex gap-2 bg-zinc-800 rounded shadow p-2">
+                    <button
+                      type="button"
+                      onClick={() => editor.chain().focus().toggleBold().run()}
+                      className={`p-1 rounded ${
+                        editor.isActive("bold")
+                          ? "bg-red-600 text-white"
+                          : "text-gray-200"
+                      }`}
+                    >
+                      <strong>B</strong>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        editor.chain().focus().toggleItalic().run()
+                      }
+                      className={`p-1 rounded ${
+                        editor.isActive("italic")
+                          ? "bg-red-600 text-white"
+                          : "text-gray-200"
+                      }`}
+                    >
+                      <em>I</em>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        editor.chain().focus().toggleUnderline().run()
+                      }
+                      className={`p-1 rounded ${
+                        editor.isActive("underline")
+                          ? "bg-red-600 text-white"
+                          : "text-gray-200"
+                      }`}
+                    >
+                      <u>U</u>
+                    </button>
+                  </div>
+                </BubbleMenu>
+              )}
             </div>
           </div>
 
@@ -316,6 +382,16 @@ const StorySubmission: React.FC<StorySubmissionProps> = ({ session }) => {
             Submit Story
           </button>
         </form>
+
+        {/* Live Preview Section */}
+        <div className="mt-8">
+          <h3 className="text-lg font-semibold text-gray-200 mb-2">
+            Live Preview
+          </h3>
+          <div className="prose prose-invert max-w-none bg-gray-800 rounded p-4 border border-gray-700">
+            <div dangerouslySetInnerHTML={{ __html: content }} />
+          </div>
+        </div>
       </div>
     </div>
   );
