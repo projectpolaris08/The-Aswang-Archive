@@ -51,12 +51,18 @@ const StoryDetail: React.FC<StoryDetailProps> = ({
             <div className="mt-4 flex items-center">
               <button
                 onClick={onUpvote}
-                disabled={!canUpvote}
-                className={`px-3 py-1 rounded font-bold mr-2 transition-colors ${
-                  hasUpvoted
-                    ? "bg-blue-600 text-white shadow-lg"
-                    : "bg-red-600 text-white hover:bg-red-700"
-                } ${!canUpvote ? "opacity-50 cursor-not-allowed" : ""}`}
+                disabled={!canUpvote || !onUpvote}
+                className={`px-3 py-1 rounded font-bold mr-2 transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500
+                  ${
+                    hasUpvoted
+                      ? "bg-blue-600 text-white shadow-lg ring-2 ring-blue-400"
+                      : "bg-red-600 text-white hover:bg-red-700"
+                  }
+                  ${
+                    !canUpvote || !onUpvote
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer"
+                  }`}
               >
                 👍 Like
               </button>
