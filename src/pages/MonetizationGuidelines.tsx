@@ -32,7 +32,7 @@ const MonetizationGuidelines: React.FC = () => {
               <span className="font-semibold text-gray-100">
                 Estimated Rate:
               </span>{" "}
-              ₱30 CPM ≈ $0.53 CPM (USD) per 1000 views
+              $0.53 CPM (USD) per 1000 views
             </li>
             <li>
               <span className="font-semibold text-gray-100">
@@ -50,9 +50,7 @@ const MonetizationGuidelines: React.FC = () => {
           </ul>
         </section>
         <section className="mb-8">
-          <h2 className="text-lg font-bold text-white mb-2">
-            2. Reader Tips (Coming Soon!)
-          </h2>
+          <h2 className="text-lg font-bold text-white mb-2">2. Reader Tips</h2>
           <ul className="list-disc pl-6 text-gray-300 space-y-1">
             <li>
               <span className="font-semibold text-gray-100">How it works:</span>{" "}
