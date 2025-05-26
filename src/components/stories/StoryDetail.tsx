@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { supabase } from "../../supabaseClient";
 import { Story } from "../../types";
 
 interface StoryDetailProps {
@@ -18,6 +19,23 @@ const StoryDetail: React.FC<StoryDetailProps> = ({
 }) => {
   // Split content into paragraphs
   const paragraphs = story.content.split("\n\n").filter(Boolean);
+  const [authorName, setAuthorName] = useState<string>("");
+
+  useEffect(() => {
+    const fetchAuthor = async () => {
+      if (!story.user_id) return;
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", story.user_id);
+      if (profiles && profiles[0]?.username) {
+        setAuthorName(profiles[0].username);
+      } else {
+        setAuthorName("Unknown");
+      }
+    };
+    fetchAuthor();
+  }, [story.user_id]);
 
   return (
     <div className="bg-gray-800 rounded-lg shadow-xl overflow-hidden">
@@ -45,6 +63,17 @@ const StoryDetail: React.FC<StoryDetailProps> = ({
           <p className="text-gray-300 max-w-2xl text-sm sm:text-base">
             {story.excerpt}
           </p>
+          {/* Author and published date */}
+          <div className="text-gray-400 text-sm mt-2">
+            By <span className="font-semibold">{authorName}</span>
+            {story.created_at && (
+              <>
+                {" "}
+                &middot; Published{" "}
+                {new Date(story.created_at).toLocaleDateString()}
+              </>
+            )}
+          </div>
           {typeof upvotes === "number" && (
             <div className="mt-4 flex items-center">
               <button

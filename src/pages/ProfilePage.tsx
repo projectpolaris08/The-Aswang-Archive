@@ -16,6 +16,12 @@ const ProfilePage: React.FC = () => {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [gcashNumber, setGcashNumber] = useState("");
+  const [mayaNumber, setMayaNumber] = useState("");
+  const [gcashQR, setGcashQR] = useState("");
+  const [mayaQR, setMayaQR] = useState("");
+  const [qrUploading, setQrUploading] = useState(false);
+  const [role, setRole] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,10 +32,24 @@ const ProfilePage: React.FC = () => {
         setAvatar(data.user.user_metadata?.avatar_url || null);
         setUsername(data.user.user_metadata?.username || "");
         setNewUsername(data.user.user_metadata?.username || "");
+        setRole(data.user.user_metadata?.role || "");
         if (data.user.user_metadata?.last_username_change) {
           setLastUsernameChange(
             new Date(data.user.user_metadata.last_username_change)
           );
+        }
+        // Fetch GCash/Maya info from profiles table
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("gcash_number, maya_number, gcash_qr_url, maya_qr_url, role")
+          .eq("id", data.user.id)
+          .single();
+        if (profile) {
+          setGcashNumber(profile.gcash_number || "");
+          setMayaNumber(profile.maya_number || "");
+          setGcashQR(profile.gcash_qr_url || "");
+          setMayaQR(profile.maya_qr_url || "");
+          setRole(profile.role || role);
         }
       }
       setLoading(false);
@@ -54,6 +74,73 @@ const ProfilePage: React.FC = () => {
     }
     const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
     return data.publicUrl;
+  };
+
+  const handleQRUpload = async (file: File, type: string) => {
+    if (!user) return;
+    setQrUploading(true);
+    const fileExt = file.name.split(".").pop() || "jpg";
+    console.log("Uploading to:", fileExt);
+    const { error: uploadError } = await supabase.storage
+      .from("qr-codes")
+      .upload(fileExt, file, { upsert: true });
+    if (uploadError) {
+      setError("QR upload failed: " + uploadError.message);
+      console.error("QR upload failed:", uploadError, fileExt, file);
+      setQrUploading(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage
+      .from("qr-codes")
+      .getPublicUrl(fileExt);
+    const publicUrl = urlData?.publicUrl;
+    console.log("Public URL:", publicUrl);
+    if (!publicUrl) {
+      setError("Failed to get public URL for QR code.");
+      setQrUploading(false);
+      return;
+    }
+    let updateObj = {};
+    if (type === "gcash") {
+      setGcashQR(publicUrl);
+      updateObj = { gcash_qr_url: publicUrl };
+    }
+    if (type === "maya") {
+      setMayaQR(publicUrl);
+      updateObj = { maya_qr_url: publicUrl };
+    }
+    console.log("Updating profile with:", updateObj);
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update(updateObj)
+      .eq("id", user.id);
+    if (profileError) {
+      setError("Failed to update profile: " + profileError.message);
+      console.error("Profile update failed:", profileError, updateObj);
+    }
+    setQrUploading(false);
+  };
+
+  const handleRemoveQR = async (type: string) => {
+    if (!user) return;
+    // Remove from Supabase Storage (try both extensions)
+    await supabase.storage
+      .from("qr-codes")
+      .remove([`${user.id}_${type}_qr.jpg`]);
+    await supabase.storage
+      .from("qr-codes")
+      .remove([`${user.id}_${type}_qr.png`]);
+    // Remove from profile
+    let updateObj = {};
+    if (type === "gcash") {
+      setGcashQR("");
+      updateObj = { gcash_qr_url: null };
+    }
+    if (type === "maya") {
+      setMayaQR("");
+      updateObj = { maya_qr_url: null };
+    }
+    await supabase.from("profiles").update(updateObj).eq("id", user.id);
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -86,10 +173,25 @@ const ProfilePage: React.FC = () => {
         "/assets/avatars/"
       );
     }
-    const updateData: any = { avatar_url: avatarToSave };
+    const updateData: any = { avatar_url: avatarToSave, role };
     if (editingUsername && username !== newUsername && canChangeUsername) {
       updateData.username = newUsername;
       updateData.last_username_change = new Date().toISOString();
+    }
+    // Save GCash/Maya info and role to profiles table
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({
+        gcash_number: gcashNumber,
+        maya_number: mayaNumber,
+        gcash_qr_url: gcashQR,
+        maya_qr_url: mayaQR,
+        role: role,
+      })
+      .eq("id", user.id);
+    if (profileError) {
+      setError(profileError.message);
+      return;
     }
     const { error } = await supabase.auth.updateUser({
       data: updateData,
@@ -102,6 +204,20 @@ const ProfilePage: React.FC = () => {
       setEditingUsername(false);
       if (updateData.last_username_change) {
         setLastUsernameChange(new Date(updateData.last_username_change));
+      }
+      // Re-fetch user and profile to update UI/navigation state
+      const { data: refreshedUser } = await supabase.auth.getUser();
+      if (refreshedUser.user) {
+        setUser(refreshedUser.user);
+        setRole(refreshedUser.user.user_metadata?.role || role);
+      }
+      const { data: refreshedProfile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+      if (refreshedProfile) {
+        setRole(refreshedProfile.role || role);
       }
     }
   };
@@ -212,6 +328,74 @@ const ProfilePage: React.FC = () => {
               onChange={setAvatar}
               onUpload={handleAvatarUpload}
             />
+          </div>
+          <div>
+            <label className="block text-gray-400 mb-2">GCash Number</label>
+            <input
+              type="text"
+              value={gcashNumber}
+              onChange={(e) => setGcashNumber(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-700"
+              placeholder="09XXXXXXXXX"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-400 mb-2">GCash QR Code</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0])
+                  handleQRUpload(e.target.files[0], "gcash");
+              }}
+              disabled={qrUploading}
+            />
+            {gcashQR && (
+              <div className="flex items-center gap-2 mt-2">
+                <img src={gcashQR} alt="GCash QR" className="w-24 h-24" />
+                <button
+                  type="button"
+                  className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                  onClick={() => handleRemoveQR("gcash")}
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+          </div>
+          <div>
+            <label className="block text-gray-400 mb-2">Maya Number</label>
+            <input
+              type="text"
+              value={mayaNumber}
+              onChange={(e) => setMayaNumber(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-700"
+              placeholder="09XXXXXXXXX"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-400 mb-2">Maya QR Code</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0])
+                  handleQRUpload(e.target.files[0], "maya");
+              }}
+              disabled={qrUploading}
+            />
+            {mayaQR && (
+              <div className="flex items-center gap-2 mt-2">
+                <img src={mayaQR} alt="Maya QR" className="w-24 h-24" />
+                <button
+                  type="button"
+                  className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                  onClick={() => handleRemoveQR("maya")}
+                >
+                  Remove
+                </button>
+              </div>
+            )}
           </div>
           <button
             type="submit"

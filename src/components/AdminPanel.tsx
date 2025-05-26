@@ -31,10 +31,22 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ user }) => {
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [rejectStory, setRejectStory] = useState<any>(null);
+  const [adminProfile, setAdminProfile] = useState<any>(null);
 
   useEffect(() => {
     fetchPendingStories();
   }, []);
+
+  useEffect(() => {
+    if (user?.id) {
+      supabase
+        .from("profiles")
+        .select("avatar_url, username, email, bio")
+        .eq("id", user.id)
+        .single()
+        .then(({ data }) => setAdminProfile(data));
+    }
+  }, [user]);
 
   const fetchPendingStories = async () => {
     try {
@@ -94,6 +106,35 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ user }) => {
 
   return (
     <div className="max-w-7xl mx-auto p-4">
+      {/* Admin Profile Card */}
+      {adminProfile && (
+        <div className="flex items-center bg-gray-800 rounded-lg p-4 mb-6 shadow">
+          <img
+            src={
+              adminProfile.avatar_url ||
+              user.user_metadata?.avatar_url ||
+              "/default-avatar.png"
+            }
+            alt="Admin Avatar"
+            className="w-16 h-16 rounded-full object-cover border-2 border-red-500 mr-4"
+          />
+          <div>
+            <div className="text-lg font-bold text-white">
+              {adminProfile.username || user.user_metadata?.username || "Admin"}
+            </div>
+            <div className="text-gray-300">
+              {adminProfile.email || user.email}
+            </div>
+            {adminProfile.bio && (
+              <div className="text-gray-400 text-sm mt-1">
+                {adminProfile.bio}
+              </div>
+            )}
+            <div className="text-xs text-red-400 mt-1 font-semibold">Admin</div>
+          </div>
+        </div>
+      )}
+
       <div className="mb-4">
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8">

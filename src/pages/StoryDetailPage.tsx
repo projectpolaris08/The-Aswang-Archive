@@ -8,6 +8,13 @@ import { ArrowLeft } from "lucide-react";
 import { supabase } from "../supabaseClient";
 import CommentsSection from "../components/comments/CommentsSection";
 
+type WriterProfile = {
+  gcash_number?: string;
+  maya_number?: string;
+  gcash_qr_url?: string;
+  maya_qr_url?: string;
+};
+
 const StoryDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [relatedStories, setRelatedStories] = useState<Story[]>([]);
@@ -16,6 +23,14 @@ const StoryDetailPage: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [upvotes, setUpvotes] = useState<number>(0);
   const [hasUpvoted, setHasUpvoted] = useState(false);
+  const [tipMessage, setTipMessage] = useState("");
+  const [tipMessageSuccess, setTipMessageSuccess] = useState(false);
+  const [tipMessageLoading, setTipMessageLoading] = useState(false);
+  const [tipMessageError, setTipMessageError] = useState<string | null>(null);
+  const [writerProfile, setWriterProfile] = useState<WriterProfile | null>(
+    null
+  );
+  const [showTipModal, setShowTipModal] = useState(false);
 
   useEffect(() => {
     const fetchStory = async () => {
@@ -99,6 +114,17 @@ const StoryDetailPage: React.FC = () => {
     checkUpvote();
   }, [user, story]);
 
+  useEffect(() => {
+    if (story?.user_id) {
+      supabase
+        .from("profiles")
+        .select("gcash_number, maya_number, gcash_qr_url, maya_qr_url")
+        .eq("id", story.user_id)
+        .single()
+        .then(({ data }) => setWriterProfile(data as WriterProfile));
+    }
+  }, [story]);
+
   const handleLike = async () => {
     if (!story || !isUUID(story.id) || !user) return;
 
@@ -147,6 +173,36 @@ const StoryDetailPage: React.FC = () => {
     }
   };
 
+  const handleSendTipMessage = async () => {
+    setTipMessageLoading(true);
+    setTipMessageError(null);
+    try {
+      if (user && story && isUUID(story.id)) {
+        const { error } = await supabase.from("tips").insert([
+          {
+            story_id: story.id,
+            user_id: user.id,
+            writer_id: story.user_id,
+            message: tipMessage,
+            amount: null,
+            method: "manual-qr",
+          },
+        ]);
+        if (error) throw error;
+      }
+      setTipMessageSuccess(true);
+      setTimeout(() => {
+        setShowTipModal(false);
+        setTipMessageSuccess(false);
+        setTipMessage("");
+      }, 1500);
+    } catch (err: any) {
+      setTipMessageError(err.message || "Failed to send message.");
+    } finally {
+      setTipMessageLoading(false);
+    }
+  };
+
   // Helper function to check for UUID
   function isUUID(id: string) {
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
@@ -159,6 +215,7 @@ const StoryDetailPage: React.FC = () => {
   console.log("DEBUG story:", story);
   console.log("DEBUG isUUID(story.id):", story ? isUUID(story.id) : null);
   console.log("DEBUG canUpvote:", canUpvote);
+  console.log("writerProfile:", writerProfile);
 
   if (loading) {
     return (
@@ -201,6 +258,115 @@ const StoryDetailPage: React.FC = () => {
           hasUpvoted={hasUpvoted}
           canUpvote={canUpvote}
         />
+
+        {/* Tip Button for Supabase stories */}
+        {story && isUUID(story.id) && user && story.user_id && (
+          <div className="flex justify-end mt-6">
+            <button
+              className="px-6 py-2 bg-yellow-500 text-black font-bold rounded hover:bg-yellow-600 transition-colors shadow-lg"
+              onClick={() => setShowTipModal(true)}
+            >
+              💸 Tip the Writer
+            </button>
+          </div>
+        )}
+
+        {console.log("Tip modal open:", showTipModal)}
+
+        {showTipModal && writerProfile && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+            <div className="bg-gray-900 rounded-lg shadow-lg p-8 w-full max-w-md relative">
+              <button
+                className="absolute top-2 right-2 text-gray-400 hover:text-white"
+                onClick={() => setShowTipModal(false)}
+                disabled={tipMessageLoading}
+              >
+                ×
+              </button>
+              <h2 className="text-xl font-bold text-white mb-4">
+                Tip the Writer
+              </h2>
+              {(writerProfile.gcash_qr_url || writerProfile.gcash_number) && (
+                <>
+                  <div className="mb-2 text-gray-200">GCash</div>
+                  {writerProfile.gcash_qr_url ? (
+                    <img
+                      src={writerProfile.gcash_qr_url}
+                      alt="GCash QR"
+                      className="mx-auto w-64 h-64"
+                    />
+                  ) : (
+                    <div className="text-gray-400 italic mb-2">
+                      No QR code uploaded.
+                    </div>
+                  )}
+                  {writerProfile.gcash_number && (
+                    <div className="text-gray-200">
+                      GCash Number: {writerProfile.gcash_number}
+                    </div>
+                  )}
+                </>
+              )}
+              {(writerProfile.maya_qr_url || writerProfile.maya_number) && (
+                <>
+                  <div className="mt-4 mb-2 text-gray-200">Maya</div>
+                  {writerProfile.maya_qr_url ? (
+                    <img
+                      src={writerProfile.maya_qr_url}
+                      alt="Maya QR"
+                      className="mx-auto w-64 h-64"
+                    />
+                  ) : (
+                    <div className="text-gray-400 italic mb-2">
+                      No QR code uploaded.
+                    </div>
+                  )}
+                  {writerProfile.maya_number && (
+                    <div className="text-gray-200">
+                      Maya Number: {writerProfile.maya_number}
+                    </div>
+                  )}
+                </>
+              )}
+              <textarea
+                className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-700 mt-4"
+                placeholder="Leave a message for the writer (optional)"
+                value={tipMessage}
+                onChange={(e) => setTipMessage(e.target.value)}
+                rows={3}
+                disabled={tipMessageLoading}
+              />
+              {tipMessageError && (
+                <div className="text-red-500 text-sm mb-2">
+                  {tipMessageError}
+                </div>
+              )}
+              <div className="flex justify-end space-x-2 mt-4">
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600"
+                  onClick={() => setShowTipModal(false)}
+                  disabled={tipMessageLoading}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+                  onClick={handleSendTipMessage}
+                  disabled={tipMessageLoading}
+                >
+                  {tipMessageLoading ? "Sending..." : "Send Message"}
+                </button>
+              </div>
+              {tipMessageSuccess && (
+                <div className="mt-4 text-green-400 text-center">
+                  Message sent!
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Comments Section: Only for Supabase stories with UUID id */}
         {story && isUUID(story.id) && (

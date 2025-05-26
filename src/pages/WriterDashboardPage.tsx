@@ -6,15 +6,48 @@ import StoriesPanel from "../components/StoriesPanel";
 import CommentsPanel from "../components/CommentsPanel";
 import MonetizePanel from "../components/MonetizePanel";
 import SettingsPanel from "../components/SettingsPanel";
-import { Menu, X } from "lucide-react";
+import {
+  Menu,
+  X,
+  Home,
+  BarChart2,
+  Book,
+  MessageCircle,
+  DollarSign,
+  Settings,
+} from "lucide-react";
 
 const sections = [
-  { key: "home", label: "Home" },
-  { key: "analytics", label: "Analytics" },
-  { key: "stories", label: "Stories" },
-  { key: "comments", label: "Comments" },
-  { key: "monetize", label: "Monetize" },
-  { key: "settings", label: "Settings" },
+  {
+    key: "home",
+    label: "Home",
+    icon: <Home className="inline mr-2 w-5 h-5" />,
+  },
+  {
+    key: "analytics",
+    label: "Analytics",
+    icon: <BarChart2 className="inline mr-2 w-5 h-5" />,
+  },
+  {
+    key: "stories",
+    label: "Stories",
+    icon: <Book className="inline mr-2 w-5 h-5" />,
+  },
+  {
+    key: "comments",
+    label: "Comments",
+    icon: <MessageCircle className="inline mr-2 w-5 h-5" />,
+  },
+  {
+    key: "monetize",
+    label: "Monetize",
+    icon: <DollarSign className="inline mr-2 w-5 h-5" />,
+  },
+  {
+    key: "settings",
+    label: "Settings",
+    icon: <Settings className="inline mr-2 w-5 h-5" />,
+  },
 ];
 
 const SectionContent: React.FC<{ section: string; user: any }> = ({
@@ -104,6 +137,7 @@ const WriterDashboardPage: React.FC = () => {
               activeSection === section.key ? "bg-red-600 text-white" : ""
             }`}
           >
+            {section.icon}
             {section.label}
           </button>
         ))}

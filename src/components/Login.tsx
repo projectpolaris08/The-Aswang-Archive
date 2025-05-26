@@ -142,6 +142,15 @@ const Login: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
+                <div className="flex justify-end mt-1">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/forgot-password")}
+                    className="text-sm text-red-500 hover:text-red-400 focus:outline-none"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
               </div>
 
               <div>

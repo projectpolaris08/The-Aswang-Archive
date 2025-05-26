@@ -21,6 +21,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
   const [toast, setToast] = useState<string | null>(null);
   const notifDropdownRef = useRef(null);
   const [showMythsDropdown, setShowMythsDropdown] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   // Helper to check if user is admin
   const isAdmin = user?.user_metadata?.is_admin;
@@ -48,6 +49,19 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
         .eq("status", "pending")
         .then(({ count }) => setPendingCount(count || 0));
     }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single()
+      .then(({ data }) => {
+        console.log("Fetched profile:", data);
+        setUserRole(data?.role || null);
+      });
   }, [user]);
 
   // Fetch notifications and unread count
@@ -306,13 +320,23 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
                     </span>
                   )}
                 </Link>
-                <Link
-                  to="/writer"
-                  className="px-3 py-1 rounded bg-zinc-700 text-white text-xs font-semibold hover:bg-red-600 transition-colors mr-2"
-                  title="Writer Dashboard"
-                >
-                  Writer Dashboard
-                </Link>
+                {userRole === "admin" ? (
+                  <Link
+                    to="/admin-dashboard"
+                    className="px-3 py-1 rounded bg-red-600 text-white text-xs font-semibold hover:bg-red-700 transition-colors mr-2"
+                    title="Admin Dashboard"
+                  >
+                    Admin Dashboard
+                  </Link>
+                ) : (
+                  <Link
+                    to="/writer"
+                    className="px-3 py-1 rounded bg-zinc-700 text-white text-xs font-semibold hover:bg-red-600 transition-colors mr-2"
+                    title="Writer Dashboard"
+                  >
+                    Writer Dashboard
+                  </Link>
+                )}
               </>
             )}
             {user && (
@@ -553,12 +577,21 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
                         </span>
                       )}
                     </Link>
-                    <Link
-                      to="/writer"
-                      className="w-full flex items-center justify-center px-4 py-2 rounded bg-zinc-700 text-white text-base font-semibold hover:bg-red-600 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 mb-2"
-                    >
-                      Writer Dashboard
-                    </Link>
+                    {userRole === "admin" ? (
+                      <Link
+                        to="/admin-dashboard"
+                        className="w-full flex items-center justify-center px-4 py-2 rounded bg-red-600 text-white text-base font-semibold hover:bg-red-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 mb-2"
+                      >
+                        Admin Dashboard
+                      </Link>
+                    ) : (
+                      <Link
+                        to="/writer"
+                        className="w-full flex items-center justify-center px-4 py-2 rounded bg-zinc-700 text-white text-base font-semibold hover:bg-red-600 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 mb-2"
+                      >
+                        Writer Dashboard
+                      </Link>
+                    )}
                   </>
                 )}
                 {user ? (

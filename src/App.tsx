@@ -31,6 +31,10 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import WriterDashboardPage from "./pages/WriterDashboardPage";
+import MonetizationGuidelines from "./pages/MonetizationGuidelines";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
+import AccessDeniedPage from "./pages/AccessDeniedPage";
+import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 
 // ScrollToTop component that will handle smooth scroll behavior
 function ScrollToTop() {
@@ -44,6 +48,35 @@ function ScrollToTop() {
   }, [pathname]);
 
   return null;
+}
+
+function DashboardRouter({ session }) {
+  const [role, setRole] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!session?.user) return;
+    setLoading(true);
+    supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .single()
+      .then(({ data }) => {
+        setRole(data?.role);
+        setLoading(false);
+      });
+  }, [session]);
+
+  if (!session?.user) return <Navigate to="/login" />;
+  if (loading)
+    return (
+      <div className="text-center text-gray-300 py-12">
+        Loading dashboard...
+      </div>
+    );
+  if (role === "admin") return <AdminDashboardPage />;
+  return <WriterDashboardPage />;
 }
 
 function App() {
@@ -129,12 +162,59 @@ function App() {
               session ? <ChangePasswordPage /> : <Navigate to="/login" />
             }
           />
+          <Route
+            path="/monetization-guidelines"
+            element={<MonetizationGuidelines />}
+          />
           <Route path="/writer" element={<WriterDashboardPage />} />
+          <Route
+            path="/dashboard"
+            element={<DashboardRouter session={session} />}
+          />
+          <Route
+            path="/admin-dashboard"
+            element={
+              <AdminProtectedRoute>
+                <AdminDashboardPage />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route path="/access-denied" element={<AccessDeniedPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </Router>
   );
+}
+
+// Admin dashboard route protection
+function AdminDashboardRoute({ session }) {
+  const [role, setRole] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!session?.user) return;
+    setLoading(true);
+    supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .single()
+      .then(({ data }) => {
+        setRole(data?.role);
+        setLoading(false);
+      });
+  }, [session]);
+
+  if (!session?.user) return <Navigate to="/login" />;
+  if (loading)
+    return (
+      <div className="text-center text-gray-300 py-12">
+        Loading dashboard...
+      </div>
+    );
+  if (role === "admin") return <AdminDashboardPage />;
+  return <Navigate to="/dashboard" />;
 }
 
 export default App;

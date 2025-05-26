@@ -28,6 +28,7 @@ export interface Story {
   imageUrl: string | null;
   featured: boolean;
   created_at?: string;
+  user_id?: string;
 }
 
 export interface Region {
