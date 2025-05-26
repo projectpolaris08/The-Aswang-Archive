@@ -32,8 +32,7 @@ const MonetizationGuidelines: React.FC = () => {
               <span className="font-semibold text-gray-100">
                 Estimated Rate:
               </span>{" "}
-              $3–$5 per 1,000 views (adjustable depending on ad revenue,
-              location of reader, and engagement).
+              ₱30 CPM ≈ $0.53 CPM (USD) per 1000 views
             </li>
             <li>
               <span className="font-semibold text-gray-100">
@@ -46,7 +45,7 @@ const MonetizationGuidelines: React.FC = () => {
               <span className="font-semibold text-gray-100">
                 Payment Threshold:
               </span>{" "}
-              Minimum of $10 before payout is processed.
+              $50 before payout is processed.
             </li>
           </ul>
         </section>
@@ -62,20 +61,13 @@ const MonetizationGuidelines: React.FC = () => {
             </li>
             <li>
               <span className="font-semibold text-gray-100">Tip Options:</span>{" "}
-              Preset amounts ($1, $3, $5) and custom input.
+              Custom input only (no preset amounts).
             </li>
             <li>
               <span className="font-semibold text-gray-100">
                 Payment Methods:
               </span>{" "}
               Via PayPal, GCash, or local bank transfer.
-            </li>
-            <li>
-              <span className="font-semibold text-gray-100">
-                Fee Structure:
-              </span>{" "}
-              The platform takes a small fee (e.g., 5%) for transaction
-              processing.
             </li>
           </ul>
         </section>
@@ -88,7 +80,7 @@ const MonetizationGuidelines: React.FC = () => {
               <span className="font-semibold text-gray-100">
                 Monthly Featured Bonuses:
               </span>{" "}
-              Top 5 most-read stories of the month get a bonus ($10–$50).
+              Top 5 most-read stories of the month get a bonus ($5–$20).
             </li>
             <li>
               <span className="font-semibold text-gray-100">
