@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 
 const ResetPasswordPage: React.FC = () => {
@@ -6,6 +6,29 @@ const ResetPasswordPage: React.FC = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [tokenChecked, setTokenChecked] = useState(false);
+
+  useEffect(() => {
+    // Extract access_token and refresh_token from URL
+    const params = new URLSearchParams(window.location.search);
+    const access_token = params.get("access_token");
+    const refresh_token = params.get("refresh_token");
+
+    if (access_token && refresh_token) {
+      supabase.auth
+        .setSession({
+          access_token,
+          refresh_token,
+        })
+        .then(({ error }) => {
+          if (error) setError("Invalid or expired link.");
+          setTokenChecked(true);
+        });
+    } else {
+      setError("Invalid or expired link.");
+      setTokenChecked(true);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +46,14 @@ const ResetPasswordPage: React.FC = () => {
     }
   };
 
+  if (!tokenChecked) {
+    return <div className="text-white text-center mt-10">Checking link...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500 text-center mt-10">{error}</div>;
+  }
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900">
       <form
@@ -35,11 +66,6 @@ const ResetPasswordPage: React.FC = () => {
         {message && (
           <div className="bg-green-100 text-green-800 p-2 rounded mb-4">
             {message}
-          </div>
-        )}
-        {error && (
-          <div className="bg-red-100 text-red-800 p-2 rounded mb-4">
-            {error}
           </div>
         )}
         <label className="block text-gray-300 mb-2">New Password</label>
