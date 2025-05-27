@@ -33,6 +33,7 @@ const Login: React.FC = () => {
   };
 
   const handleGoogleLogin = async () => {
+    console.log("Google button clicked");
     await supabase.auth.signInWithOAuth({ provider: "google" });
   };
 
